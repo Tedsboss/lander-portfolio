@@ -1,0 +1,59 @@
+# Build Tailwind and JavaScript assets
+FROM node:24-alpine AS assets
+
+WORKDIR /build
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+
+# Run Laravel
+FROM dunglas/frankenphp:1-php8.3-bookworm
+
+WORKDIR /app
+
+RUN install-php-extensions \
+    mbstring \
+    bcmath \
+    pdo_mysql \
+    intl \
+    zip \
+    opcache
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+COPY . .
+
+# Remove local generated configuration before installing dependencies
+RUN rm -f bootstrap/cache/*.php public/hot \
+    && mkdir -p bootstrap/cache \
+       storage/framework/cache/data \
+       storage/framework/sessions \
+       storage/framework/views \
+       storage/logs \
+    && composer install \
+       --no-dev \
+       --prefer-dist \
+       --no-interaction \
+       --optimize-autoloader \
+    && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+
+COPY --from=assets /build/public/build ./public/build
+
+COPY Caddyfile /etc/caddy/Caddyfile
+
+ENV APP_ENV=production \
+    APP_DEBUG=false \
+    LOG_CHANNEL=stderr \
+    CACHE_STORE=array \
+    SESSION_DRIVER=cookie \
+    SESSION_SECURE_COOKIE=true \
+    QUEUE_CONNECTION=sync \
+    VIEW_COMPILED_PATH=/tmp/laravel/views
+
+EXPOSE 80
+
+CMD ["/bin/sh", "-c", "mkdir -p /tmp/laravel/views && exec frankenphp run --config /etc/caddy/Caddyfile --adapter caddyfile"]
