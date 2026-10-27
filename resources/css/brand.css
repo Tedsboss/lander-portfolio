@@ -134,3 +134,16 @@
     display: block;
     width: 100%;
 }
+
+/* Blend the hero logo into the selected background. */
+.celestial-brand--hero {
+    background: transparent;
+    mix-blend-mode: screen;
+}
+
+.celestial-brand--hero .celestial-brand__art {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
