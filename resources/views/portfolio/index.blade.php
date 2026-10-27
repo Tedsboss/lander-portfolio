@@ -2,14 +2,26 @@
 
 @section('content')
     @php
-        $featuredProjects = $allProjects->take(5);
-        $communityProjects = $allProjects->where('category', 'community');
+        $resumeAvailable = is_file(
+            public_path('downloads/lander-resume.pdf')
+        );
+
+        $showcaseProjects = $allProjects->take(5);
         $projectCount = $allProjects->count();
-        $profileName = config('portfolio.name', 'Lander');
+        $communityProjects = $allProjects->where(
+            'category',
+            'community'
+        );
+
+        $filters = ['all' => 'All projects']
+            + config('portfolio.categories', []);
     @endphp
 
     {{-- Hero --}}
-    <section class="hero shell" aria-labelledby="hero-title">
+    <section
+        class="hero shell"
+        aria-labelledby="hero-title"
+    >
         <div class="hero-copy">
             <div class="eyebrow">
                 <span class="live-dot" aria-hidden="true"></span>
@@ -23,9 +35,10 @@
             </h1>
 
             <p class="hero-intro">
-                Hey, I’m {{ $profileName }}. I build digital experiences
-                that move public service forward. Complex workflows.
-                Thoughtful code. Real-world purpose.
+                Hey, I’m {{ config('portfolio.name', 'Lander') }}.
+                I build digital experiences that move public service
+                forward. Complex workflows. Thoughtful code.
+                Real-world purpose.
             </p>
 
             <div class="hero-buttons">
@@ -35,7 +48,7 @@
                 </a>
 
                 <a class="text-link" href="#download">
-                    Download resume
+                    View my résumé
                     <span aria-hidden="true">↓</span>
                 </a>
             </div>
@@ -48,105 +61,44 @@
                     MADE TO MAKE A DIFFERENCE.
                 </span>
 
-                <span class="signature-line" aria-hidden="true"></span>
+                <span
+                    class="signature-line"
+                    aria-hidden="true"
+                ></span>
             </div>
         </div>
 
-        <div
-            class="hero-scene"
-            data-tilt
-            role="img"
-            aria-label="Three-dimensional software core illustration"
-        >
-            <div class="scene-grid"></div>
-
-            <span class="scene-corner top-left"></span>
-            <span class="scene-corner bottom-right"></span>
-
-            <div class="scene-coordinate">
-                SYS.CORE / 01<br>
-                <span>PHP · LARAVEL · TAILWIND</span>
-            </div>
-
-            <div class="core-glow"></div>
-
-            <div class="orbit orbit-a"></div>
-            <div class="orbit orbit-b"></div>
-            <div class="orbit orbit-c"></div>
-
-            <div class="cube-wrap">
-                <div class="cube">
-                    <div class="cube-face face-front">
-                        <span>&lt;/&gt;</span>
-                        <small>LANDER.DEV</small>
-                    </div>
-
-                    <div class="cube-face face-back"></div>
-
-                    <div class="cube-face face-right">
-                        <span>01</span>
-                    </div>
-
-                    <div class="cube-face face-left"></div>
-
-                    <div class="cube-face face-top">
-                        <span>✳</span>
-                    </div>
-
-                    <div class="cube-face face-bottom"></div>
-                </div>
-            </div>
-
-            <div class="floating-chip chip-a">
-                <span class="chip-icon">↗</span>
-
-                <div>
-                    PUBLIC SECTOR
-                    <small>SOFTWARE WITH PURPOSE</small>
-                </div>
-            </div>
-
-            <div class="floating-chip chip-b">
-                <span class="chip-icon">⌘</span>
-
-                <div>
-                    FULL STACK
-                    <small>FROM DATA TO EXPERIENCE</small>
-                </div>
-            </div>
-
-            <span class="scene-caption">
-                MOVE YOUR CURSOR. SHIFT YOUR PERSPECTIVE.
-                <span>+</span>
-            </span>
-
-            <span class="scene-star star-one">+</span>
-            <span class="scene-star star-two">+</span>
-        </div>
+        <x-brand variant="hero" />
     </section>
 
-    {{-- Toolkit --}}
+    {{-- Technical toolkit --}}
     <div class="tech-strip">
         <div class="shell tech-strip-inner">
             <span class="strip-label">
-                MY TOOLKIT <span aria-hidden="true">→</span>
+                MY TOOLKIT
+                <span aria-hidden="true">→</span>
             </span>
 
             <span>PHP</span>
             <i aria-hidden="true">✦</i>
+
             <span>LARAVEL</span>
             <i aria-hidden="true">✦</i>
+
             <span>TAILWIND CSS</span>
             <i aria-hidden="true">✦</i>
+
             <span>MYSQL</span>
             <i aria-hidden="true">✦</i>
+
             <span>REACT</span>
             <i aria-hidden="true">✦</i>
+
             <span>API INTEGRATION</span>
         </div>
     </div>
 
-    {{-- Featured project carousel --}}
+    {{-- Featured projects --}}
     <section
         class="showcase shell section"
         id="showcase"
@@ -166,14 +118,21 @@
             </div>
 
             <div class="carousel-controls">
-                <span class="carousel-position" aria-live="polite">
-                    01 / {{ str_pad((string) $featuredProjects->count(), 2, '0', STR_PAD_LEFT) }}
+                <span
+                    class="carousel-position"
+                    aria-live="polite"
+                    aria-atomic="true"
+                >
+                    {{ $showcaseProjects->isEmpty() ? '00' : '01' }}
+                    /
+                    {{ str_pad($showcaseProjects->count(), 2, '0', STR_PAD_LEFT) }}
                 </span>
 
                 <button
                     type="button"
                     data-carousel-prev
                     aria-label="Previous featured project"
+                    aria-controls="featured-carousel"
                 >
                     ←
                 </button>
@@ -182,6 +141,7 @@
                     type="button"
                     data-carousel-next
                     aria-label="Next featured project"
+                    aria-controls="featured-carousel"
                 >
                     →
                 </button>
@@ -190,120 +150,21 @@
 
         <div
             class="carousel"
+            id="featured-carousel"
             role="region"
-            aria-label="Game-inspired project showcase"
+            aria-label="Featured project showcase"
             aria-roledescription="carousel"
             tabindex="0"
         >
-            @foreach ($featuredProjects as $project)
-                @php
-                    $theme = $project['theme']
-                        ?? ($project['id'] === 'ppms' ? 'blue' : 'lime');
-
-                    $projectNumber = str_pad(
-                        (string) $project['number'],
-                        2,
-                        '0',
-                        STR_PAD_LEFT
-                    );
-                @endphp
-
-                <article
-                    class="showcase-card theme-{{ $theme }}"
-                    aria-label="{{ $project['code'] }} featured project"
-                >
-                    <div class="card-visual" aria-hidden="true">
-                        <div class="cover-grid"></div>
-
-                        <span class="cover-meta">
-                            FEATURED SYSTEM / {{ $projectNumber }}
-                        </span>
-
-                        <span class="cover-cross">+</span>
-
-                        <div class="cover-device device-{{ $project['id'] }}">
-                            <div class="device-top">
-                                <i></i>
-                                <i></i>
-                                <i></i>
-                                <span>{{ $project['code'] }}.SYS</span>
-                            </div>
-
-                            <div class="device-content">
-                                <div class="device-sidebar">
-                                    <b></b>
-                                    <b></b>
-                                    <b></b>
-                                    <b></b>
-                                </div>
-
-                                <div class="device-main">
-                                    <span>{{ $project['label'] }}</span>
-
-                                    <div class="device-bars">
-                                        <i></i>
-                                        <i></i>
-                                        <i></i>
-                                        <i></i>
-                                        <i></i>
-                                    </div>
-
-                                    <div class="device-data">
-                                        <b></b>
-                                        <b></b>
-                                        <b></b>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <strong class="cover-code">
-                            {{ $project['code'] }}
-                        </strong>
-
-                        <span class="cover-foot">
-                            CONCEPTUAL SYSTEM ARTWORK
-                            <span>↗</span>
-                        </span>
-                    </div>
-
-                    <div class="showcase-card-body">
-                        <div class="card-category">
-                            <span>{{ $project['label'] }}</span>
-                            <span>{{ $projectNumber }}</span>
-                        </div>
-
-                        <h3>
-                            <a href="{{ route('portfolio.show', $project['id']) }}">
-                                {{ $project['code'] }}
-                                <span aria-hidden="true">↗</span>
-                            </a>
-                        </h3>
-
-                        <p>{{ $project['name'] }}</p>
-
-                        <div class="card-bottom">
-                            <span class="role-chip">
-                                {{ $project['role'] ?? 'Project experience' }}
-                            </span>
-
-                            <button
-                                type="button"
-                                class="save-button"
-                                data-save="{{ $project['id'] }}"
-                                aria-label="Save {{ $project['code'] }}"
-                                aria-pressed="false"
-                            >
-                                +
-                            </button>
-                        </div>
-                    </div>
-                </article>
+            @foreach ($showcaseProjects as $project)
+                @include('portfolio.partials.showcase-card')
             @endforeach
         </div>
 
         <div class="showcase-bottom">
-            <span>REAL PROJECTS. GAME-INSPIRED PRESENTATION.</span>
+            <span>
+                REAL PROJECTS. GAME-INSPIRED PRESENTATION.
+            </span>
 
             <a href="#projects">
                 VIEW ALL {{ $projectCount }} PROJECTS
@@ -312,12 +173,12 @@
         </div>
     </section>
 
-    {{-- Searchable project archive --}}
+    {{-- Complete project archive --}}
     <section
         class="archive shell section"
         id="projects"
         data-initial-filter="{{ $category }}"
-        aria-labelledby="archive-title"
+        aria-labelledby="projects-title"
     >
         <div class="section-heading">
             <div>
@@ -326,7 +187,7 @@
                     THE COMPLETE COLLECTION
                 </span>
 
-                <h2 id="archive-title">
+                <h2 id="projects-title">
                     THE PROJECT
                     <span class="serif-neon">ARCHIVE.</span>
                 </h2>
@@ -344,20 +205,26 @@
                 role="group"
                 aria-label="Filter project archive"
             >
-                @foreach (['all' => 'All projects'] + config('portfolio.categories') as $key => $label)
+                @foreach ($filters as $key => $label)
                     <a
-                        href="{{ route('portfolio.index', $key === 'all' ? [] : ['category' => $key]) }}#projects"
+                        href="{{ route(
+                            'portfolio.index',
+                            $key === 'all' ? [] : ['category' => $key]
+                        ) }}#projects"
+
                         @class([
                             'filter',
                             'active' => $category === $key,
                         ])
+
                         data-filter="{{ $key }}"
+
                         @if ($category === $key)
                             aria-current="page"
                         @endif
                     >
                         {{ $label }}
-                        <span>{{ $counts[$key] }}</span>
+                        <span>{{ $counts[$key] ?? 0 }}</span>
                     </a>
                 @endforeach
 
@@ -391,63 +258,18 @@
 
         <div class="archive-list">
             @foreach ($allProjects as $project)
-                <article
-                    class="archive-row"
-                    data-project="{{ $project['id'] }}"
-                    data-category="{{ $project['category'] }}"
-                    data-search="{{ $project['code'].' '.$project['name'].' '.$project['label'] }}"
-                    @if ($category !== 'all' && $project['category'] !== $category)
-                        hidden
-                    @endif
-                >
-                    <span class="row-index">
-                        {{ str_pad((string) $project['number'], 2, '0', STR_PAD_LEFT) }}
-                    </span>
-
-                    <a
-                        class="row-title"
-                        href="{{ route('portfolio.show', $project['id']) }}"
-                    >
-                        <strong>{{ $project['code'] }}</strong>
-                        <span>{{ $project['name'] }}</span>
-                    </a>
-
-                    <span class="row-domain">
-                        {{ $project['label'] }}
-                    </span>
-
-                    <div class="row-actions">
-                        <button
-                            type="button"
-                            class="save-button"
-                            data-save="{{ $project['id'] }}"
-                            aria-label="Save {{ $project['code'] }}"
-                            aria-pressed="false"
-                        >
-                            +
-                        </button>
-
-                        <a
-                            class="row-arrow"
-                            href="{{ route('portfolio.show', $project['id']) }}"
-                            aria-label="View {{ $project['code'] }} project"
-                        >
-                            ↗
-                        </a>
-                    </div>
-                </article>
+                @include('portfolio.partials.archive-row')
             @endforeach
         </div>
 
         <div class="archive-empty" hidden>
-            No projects here yet. Try another filter or save a project
-            with the + button.
+            No projects match your selection.
+            Try another filter or save a project with the + button.
         </div>
 
         <div class="archive-foot">
-            <span data-result-count aria-live="polite">
-                {{ $projects->count() }}
-                {{ $projects->count() === 1 ? 'PROJECT' : 'PROJECTS' }}
+            <span data-result-count>
+                {{ $counts[$category] ?? $projectCount }} PROJECTS
             </span>
 
             <span>
@@ -457,7 +279,7 @@
         </div>
     </section>
 
-    {{-- Community project spotlights --}}
+    {{-- Community projects --}}
     <section
         class="community-section"
         id="community"
@@ -487,52 +309,16 @@
 
             <div class="community-grid">
                 @foreach ($communityProjects as $project)
-                    <article class="community-card {{ $project['id'] }}">
-                        <div class="community-card-top">
-                            <span class="community-icon" aria-hidden="true">
-                                {{ $project['id'] === 'sagad' ? '⌘' : '✳' }}
-                            </span>
-
-                            <span class="status-pill">
-                                {{ $project['status'] ?? 'Thesis project' }}
-                            </span>
-                        </div>
-
-                        <span class="eyebrow">
-                            COMMUNITY PROJECT
-                        </span>
-
-                        <h3>
-                            {{ $project['code'] }}
-                            <span>{{ $project['name'] }}</span>
-                        </h3>
-
-                        <p>{{ $project['description'] }}</p>
-
-                        <div class="community-actions">
-                            <a
-                                class="text-link"
-                                href="{{ route('portfolio.show', $project['id']) }}"
-                            >
-                                Explore project
-                                <span aria-hidden="true">↗</span>
-                            </a>
-
-                            <button
-                                type="button"
-                                class="share-button"
-                                data-share="{{ route('portfolio.show', $project['id']) }}"
-                                data-share-name="{{ $project['code'] }}"
-                                aria-label="Share {{ $project['code'] }} project"
-                            >
-                                ↗ Share
-                            </button>
-                        </div>
-                    </article>
+                    @include('portfolio.partials.community-card')
                 @endforeach
 
                 <div class="collection-panel">
-                    <span class="community-icon" aria-hidden="true">⌘</span>
+                    <span
+                        class="community-icon"
+                        aria-hidden="true"
+                    >
+                        ⌘
+                    </span>
 
                     <span class="eyebrow">
                         YOUR PROJECT COLLECTION
@@ -567,18 +353,18 @@
         </div>
     </section>
 
-    {{-- Developer profile --}}
+    {{-- About --}}
     <section
         class="about shell section"
         id="about"
         aria-labelledby="about-title"
     >
         <div class="about-identity">
-            <div class="avatar-cube" aria-hidden="true">
-                L<span>↗</span>
-            </div>
+            <x-brand variant="icon" class="mb-6" />
 
-            <span class="eyebrow">MEET THE BUILDER</span>
+            <span class="eyebrow">
+                MEET THE BUILDER
+            </span>
 
             <h2 id="about-title">
                 HUMAN FIRST.<br>
@@ -588,7 +374,7 @@
             </h2>
 
             <p class="about-name">
-                {{ $profileName }}
+                {{ config('portfolio.name', 'Lander') }}
 
                 <span>
                     {{ config('portfolio.role', 'Senior Software Developer') }}
@@ -610,19 +396,19 @@
 
             <p>
                 My work spans government information systems, project
-                monitoring, financial planning, innovation grants,
-                and infrastructure data. I contribute through development,
+                monitoring, financial planning, innovation grants, and
+                infrastructure data. I contribute through development,
                 interface improvements, workflow fixes, API integration,
                 and ongoing maintenance.
             </p>
 
             <p>
                 From national platforms to barangay projects, I care
-                about the same thing: understanding the people behind
-                the process and building something that helps.
+                about understanding the people behind the process
+                and building something that helps.
             </p>
 
-            <div class="skill-tags">
+            <div class="skill-tags" aria-label="Technical skills">
                 @foreach (config('portfolio.skills', []) as $skill)
                     <span>{{ $skill }}</span>
                 @endforeach
@@ -634,18 +420,12 @@
     <section
         class="download-section shell"
         id="download"
-        aria-labelledby="download-title"
+        aria-labelledby="resume-title"
     >
-        @php
-            $resumeAvailable = is_file(
-                public_path('downloads/lander-resume2.pdf')
-            );
-        @endphp
-
         <div class="download-panel">
             <div class="download-art" aria-hidden="true">
                 <div class="download-sheet">
-                    <span>LANDER.DEV</span>
+                    <span>LANDER</span>
 
                     <strong>
                         MY<br>
@@ -655,7 +435,9 @@
 
                     <div class="paper-lines"></div>
 
-                    <small>SENIOR SOFTWARE DEVELOPER</small>
+                    <small>
+                        EXPERIENCE / PROJECTS / SKILLS
+                    </small>
                 </div>
 
                 <div class="download-orbit"></div>
@@ -663,28 +445,27 @@
 
             <div class="download-copy">
                 <span class="eyebrow">
-                    EXPERIENCE / SKILLS / PROJECTS
+                    THE PERSON BEHIND THE PROJECTS
                 </span>
 
-                <h2 id="download-title">
-                    THE DEVELOPER.<br>
-
+                <h2 id="resume-title">
+                    EXPERIENCE.<br>
                     <span class="lime-text">
-                        BEHIND THE CODE.
+                        WORTH EXPLORING.
                     </span>
                 </h2>
 
                 <p>
-                    Explore my professional experience, technical skills,
-                    and contributions to government and community systems.
+                    A closer look at my professional experience,
+                    project contributions, education, and technical
+                    skills. Download my résumé to read offline.
                 </p>
 
                 @if ($resumeAvailable)
                     <a
                         class="btn btn-lime"
-                        href="{{ asset('downloads/lander-resume2.pdf') }}"
-                        download="lander-resume2.pdf"
-                        aria-label="Download Lander's résumé as a PDF"
+                        href="{{ asset('downloads/lander-resume.pdf') }}"
+                        download="Lander-Resume.pdf"
                     >
                         Download résumé
                         <span aria-hidden="true">↓</span>
@@ -693,19 +474,18 @@
                     <small>
                         PDF FORMAT
                         <span aria-hidden="true">✦</span>
-                        RÉSUMÉ
+                        PROFESSIONAL RÉSUMÉ
                     </small>
                 @else
-                    <button
-                        type="button"
+                    <span
                         class="btn btn-lime"
-                        disabled
+                        aria-disabled="true"
                     >
                         Résumé available soon
-                    </button>
+                    </span>
 
                     <small>
-                        THE RÉSUMÉ PDF WILL BE ADDED SOON
+                        MY UPDATED RÉSUMÉ WILL BE AVAILABLE HERE
                     </small>
                 @endif
             </div>

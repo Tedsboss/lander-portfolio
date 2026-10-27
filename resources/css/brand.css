@@ -1,0 +1,131 @@
+.celestial-brand {
+    --brand-gold: #edcf96;
+    --brand-text: #f1edf5;
+    --brand-muted: #a59baa;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    width: fit-content;
+    margin: 0;
+    color: var(--brand-text);
+    text-decoration: none;
+}
+
+.celestial-brand__emblem {
+    display: block;
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.celestial-brand__identity {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.celestial-brand__name {
+    color: var(--brand-gold);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 3px;
+}
+
+.celestial-brand__role {
+    color: var(--brand-muted);
+    font-family: var(--mono, monospace);
+    font-size: 9px;
+    line-height: 1.4;
+    letter-spacing: 1px;
+}
+
+.celestial-brand:focus-visible {
+    outline: 2px solid var(--brand-gold);
+    outline-offset: 6px;
+    border-radius: 6px;
+}
+
+/* Full artwork beside the introduction */
+.celestial-brand.celestial-brand--hero {
+    display: block;
+    width: 100%;
+    max-width: 540px;
+    justify-self: center;
+    align-self: center;
+    perspective: 1000px;
+}
+
+.celestial-brand__art {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+}
+
+/* Small footer branding */
+.celestial-brand--footer .celestial-brand__emblem {
+    width: 38px;
+    height: 38px;
+}
+
+.celestial-brand--footer .celestial-brand__name {
+    font-size: 18px;
+}
+
+.celestial-brand--footer .celestial-brand__role {
+    display: none;
+}
+
+/* Standalone emblem for the About section */
+.celestial-brand--icon .celestial-brand__emblem {
+    width: 76px;
+    height: 76px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .celestial-brand__art {
+        transition: transform 350ms ease;
+    }
+
+    .celestial-brand--hero:hover .celestial-brand__art {
+        transform: translateY(-6px) rotateY(-4deg);
+    }
+}
+
+@media (max-width: 767px) {
+    .celestial-brand {
+        gap: 8px;
+    }
+
+    .celestial-brand__emblem {
+        width: 40px;
+        height: 40px;
+    }
+
+    .celestial-brand__name {
+        font-size: 18px;
+        letter-spacing: 2px;
+    }
+
+    .celestial-brand__role {
+        display: none;
+    }
+
+    .celestial-brand.celestial-brand--hero {
+        max-width: 420px;
+        margin-top: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .celestial-brand__art,
+    .celestial-brand--hero:hover .celestial-brand__art {
+        transform: none;
+        transition: none;
+    }
+}

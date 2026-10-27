@@ -1,32 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#0b0c10">
 
     <meta
         name="description"
-        content="Explore Lander's software development experience, government systems, and community projects."
+        content="Lander — Senior Software Developer. Government platforms, community systems, and software built with purpose."
     >
 
     <title>
-        @yield('title', config('portfolio.name', 'Lander').' — Software Developer')
+        @yield(
+            'title',
+            config('portfolio.name', 'Lander').' — '.
+            config('portfolio.role', 'Senior Software Developer')
+        )
     </title>
 
     <link
         rel="icon"
-        href="{{ asset('favicon.svg') }}"
+        href="{{ asset('favicon.svg') }}?v=2"
         type="image/svg+xml"
     >
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
     <link
         rel="preconnect"
         href="https://fonts.gstatic.com"
@@ -45,8 +44,8 @@
 
 <body class="antialiased">
     @php
-        $navigationResumeAvailable = is_file(
-            public_path('downloads/lander-resume2.pdf')
+        $resumeAvailable = is_file(
+            public_path('downloads/lander-resume.pdf')
         );
     @endphp
 
@@ -60,28 +59,18 @@
         data-nav-open="false"
     >
         <div class="shell portfolio-nav-inner">
-            <a
-                class="logo"
-                href="{{ route('portfolio.index') }}"
-                aria-label="Lander home"
-            >
-                <span class="logo-symbol" aria-hidden="true">
-                    L<span>↗</span>
-                </span>
-
-                LANDER<span class="logo-ext">.DEV</span>
-            </a>
+            <x-brand />
 
             <button
                 type="button"
                 class="portfolio-menu-toggle"
                 data-nav-toggle
-                aria-label="Open navigation"
                 aria-controls="portfolio-navigation"
                 aria-expanded="false"
-                hidden
+                aria-label="Toggle navigation"
             >
-                <span data-nav-icon aria-hidden="true">☰</span>
+                <span aria-hidden="true">☰</span>
+                <span>Menu</span>
             </button>
 
             <nav
@@ -96,10 +85,6 @@
 
                 <a href="{{ route('portfolio.index') }}#projects">
                     Projects
-
-                    <span class="portfolio-nav-count">
-                        {{ count(config('portfolio.projects', [])) }}
-                    </span>
                 </a>
 
                 <a href="{{ route('portfolio.index') }}#community">
@@ -109,28 +94,25 @@
                 <a href="{{ route('portfolio.index') }}#about">
                     About
                 </a>
-            </nav>
 
-            @if ($navigationResumeAvailable)
-                <a
-                    class="nav-download"
-                    href="{{ asset('downloads/lander-resume2.pdf') }}"
-                    download="lander-resume2.pdf"
-                    aria-label="Download Lander's résumé as a PDF"
-                >
-                    Résumé
-                    <span aria-hidden="true">↓</span>
-                </a>
-            @else
-                <button
-                    type="button"
-                    class="nav-download"
-                    title="The résumé PDF will be available soon."
-                    disabled
-                >
-                    Résumé soon
-                </button>
-            @endif
+                @if ($resumeAvailable)
+                    <a
+                        class="nav-download"
+                        href="{{ asset('downloads/lander-resume.pdf') }}"
+                        download="Lander-Resume.pdf"
+                    >
+                        Résumé
+                        <span aria-hidden="true">↓</span>
+                    </a>
+                @else
+                    <span
+                        class="nav-download"
+                        aria-disabled="true"
+                    >
+                        Résumé soon
+                    </span>
+                @endif
+            </nav>
         </div>
     </header>
 
@@ -139,19 +121,15 @@
     </main>
 
     <footer class="footer shell">
-        <a
-            class="logo"
-            href="{{ route('portfolio.index') }}"
-        >
-            LANDER<span class="logo-ext">.DEV</span>
-        </a>
+        <x-brand variant="footer" />
 
         <span>
             CODE WITH PURPOSE. BUILD FOR PEOPLE.
         </span>
 
         <span>
-            © {{ now()->year }} LANDER
+            © {{ now()->year }}
+            {{ config('portfolio.name', 'Lander') }}
 
             <a href="{{ route('portfolio.index') }}#main">
                 ↑ BACK TO TOP
@@ -163,6 +141,7 @@
         class="toast"
         role="status"
         aria-live="polite"
+        aria-atomic="true"
         hidden
     ></div>
 
@@ -184,7 +163,9 @@
             </button>
         </div>
 
-        <p>Copy the project link below.</p>
+        <p>
+            Copy the project link below.
+        </p>
 
         <input
             type="text"

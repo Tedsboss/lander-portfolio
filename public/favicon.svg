@@ -1,1 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0b0c10"/><path d="M16 13h8v35h21v7H16z" fill="#d2ff5a"/><path d="M37 14h13v13M50 14 34 30" fill="none" stroke="#e883ff" stroke-width="5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 64 64">
+    <title>Lander celestial emblem</title>
+
+    <defs>
+        <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#fff0bf"/>
+            <stop offset=".5" stop-color="#d9ac63"/>
+            <stop offset="1" stop-color="#f6db9f"/>
+        </linearGradient>
+
+        <linearGradient id="amethyst" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ddb9ff"/>
+            <stop offset=".5" stop-color="#9852d6"/>
+            <stop offset="1" stop-color="#54217c"/>
+        </linearGradient>
+    </defs>
+
+    <rect width="64"
+          height="64"
+          rx="14"
+          fill="#0b0c10"/>
+
+    <!-- Open celestial A silhouette -->
+    <path
+        d="M32 5
+           C25 23 18 43 6 57
+           C18 49 27 33 32 13
+           C37 33 46 49 58 57
+           C46 43 39 23 32 5Z"
+        fill="url(#gold)"/>
+
+    <!-- Navigation star -->
+    <path
+        d="M32 18
+           L35 29
+           L47 32
+           L35 35
+           L32 47
+           L29 35
+           L17 32
+           L29 29Z"
+        fill="url(#gold)"/>
+
+    <!-- February amethyst -->
+    <path
+        d="M32 27 L37 32 L32 37 L27 32Z"
+        fill="url(#amethyst)"
+        stroke="#ffe8b5"
+        stroke-width="1"/>
+
+    <!-- Aquarius waves -->
+    <g fill="none"
+       stroke="url(#gold)"
+       stroke-width="2.4"
+       stroke-linecap="round"
+       stroke-linejoin="round">
+        <path d="M20 46 L26 42 L32 46 L38 42 L44 46"/>
+        <path d="M20 53 L26 49 L32 53 L38 49 L44 53"/>
+    </g>
+</svg>
