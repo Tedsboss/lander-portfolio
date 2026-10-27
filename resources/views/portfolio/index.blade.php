@@ -35,7 +35,7 @@
                 </a>
 
                 <a class="text-link" href="#download">
-                    Download portfolio
+                    Download resume
                     <span aria-hidden="true">↓</span>
                 </a>
             </div>
