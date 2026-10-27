@@ -1,1 +1,102 @@
-<article class="showcase-card theme-{{ $project['theme'] ?? ($project['id'] === 'ppms' ? 'blue' : 'lime') }}" aria-label="{{ $project['code'] }} featured project"><div class="card-visual" aria-hidden="true"><div class="cover-grid"></div><span class="cover-meta">FEATURED SYSTEM / 0{{ $project['number'] }}</span><span class="cover-cross">+</span><div class="cover-device device-{{ $project['id'] }}"><div class="device-top"><i></i><i></i><i></i><span>{{ $project['code'] }}.SYS</span></div><div class="device-content"><div class="device-sidebar"><b></b><b></b><b></b><b></b></div><div class="device-main"><span>{{ $project['label'] }}</span><div class="device-bars"><i></i><i></i><i></i><i></i><i></i></div><div class="device-data"><b></b><b></b><b></b></div></div></div></div><strong class="cover-code">{{ $project['code'] }}</strong><span class="cover-foot">CONCEPTUAL SYSTEM ARTWORK <span>↗</span></span></div><div class="showcase-card-body"><div class="card-category"><span>{{ $project['label'] }}</span><span>0{{ $project['number'] }}</span></div><h3><a href="{{ route('portfolio.show', $project['id']) }}">{{ $project['code'] }} <span aria-hidden="true">↗</span></a></h3><p>{{ $project['name'] }}</p><div class="card-bottom"><span class="role-chip">{{ $project['role'] ?? 'Project experience' }}</span><button class="save-button" data-save="{{ $project['id'] }}" aria-label="Save {{ $project['code'] }}" aria-pressed="false">+</button></div></div></article>
+@php
+    $screenshots = collect(
+        config('project_screenshots.'.$project['id'], [])
+    )
+        ->filter(
+            fn ($caption, $path) => is_file(
+                public_path('images/'.$path)
+            )
+        )
+        ->map(
+            fn ($caption, $path) => [
+                'src' => asset('images/'.$path),
+                'caption' => $caption,
+            ]
+        )
+        ->values();
+
+    $cover = $screenshots->first();
+
+    $theme = $project['theme']
+        ?? ($project['id'] === 'ppms' ? 'blue' : 'lime');
+@endphp
+
+<article
+    class="showcase-card theme-{{ $theme }}"
+    aria-label="{{ $project['code'] }} featured project"
+>
+    @if ($cover)
+        <a
+            class="card-visual card-visual--screenshot"
+            href="{{ route('portfolio.show', $project['id']) }}"
+            aria-label="Explore {{ $project['code'] }} screenshots and project details"
+        >
+            <img
+                class="project-cover-image"
+                src="{{ $cover['src'] }}"
+                alt="{{ $project['code'] }} — {{ $cover['caption'] }}"
+                loading="lazy"
+                decoding="async"
+            >
+
+            <span class="project-cover-badge">
+                {{ $screenshots->count() }} SCREENSHOTS
+            </span>
+        </a>
+    @else
+        <div class="card-visual" aria-hidden="true">
+            <div class="cover-grid"></div>
+
+            <span class="cover-meta">
+                FEATURED SYSTEM /
+                {{ str_pad($project['number'], 2, '0', STR_PAD_LEFT) }}
+            </span>
+
+            <span class="cover-cross">+</span>
+
+            <strong class="cover-code">
+                {{ $project['code'] }}
+            </strong>
+
+            <span class="cover-foot">
+                CONCEPTUAL SYSTEM ARTWORK
+                <span>↗</span>
+            </span>
+        </div>
+    @endif
+
+    <div class="showcase-card-body">
+        <div class="card-category">
+            <span>{{ $project['label'] }}</span>
+
+            <span>
+                {{ str_pad($project['number'], 2, '0', STR_PAD_LEFT) }}
+            </span>
+        </div>
+
+        <h3>
+            <a href="{{ route('portfolio.show', $project['id']) }}">
+                {{ $project['code'] }}
+                <span aria-hidden="true">↗</span>
+            </a>
+        </h3>
+
+        <p>{{ $project['name'] }}</p>
+
+        <div class="card-bottom">
+            <span class="role-chip">
+                {{ $project['role'] ?? 'Project experience' }}
+            </span>
+
+            <button
+                type="button"
+                class="save-button"
+                data-save="{{ $project['id'] }}"
+                aria-label="Save {{ $project['code'] }}"
+                aria-pressed="false"
+            >
+                +
+            </button>
+        </div>
+    </div>
+</article>
