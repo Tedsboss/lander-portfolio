@@ -3187,3 +3187,102 @@ html {
     outline: 2px solid #edcf96;
     outline-offset: 3px;
 }
+
+.archive .archive-empty {
+    padding: 48px 24px;
+    border: 1px dashed rgba(237, 207, 150, 0.25);
+    border-radius: 14px;
+    background: #111116;
+    text-align: center;
+}
+
+.archive .archive-empty[hidden] {
+    display: none;
+}
+
+.archive-empty__symbol {
+    display: block;
+    margin-bottom: 12px;
+    color: #c6a0ee;
+    font-size: 40px;
+    line-height: 1;
+}
+
+.archive .archive-empty h3 {
+    margin: 0;
+    color: #f5f2f8;
+    font-size: 22px;
+    line-height: 1.4;
+}
+
+.archive .archive-empty p {
+    max-width: 400px;
+    margin: 12px auto 24px;
+    color: #b5afc0;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.archive .archive-empty .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+}
+
+.archive .archive-empty button:focus-visible {
+    outline: 2px solid #edcf96;
+    outline-offset: 5px;
+}
+
+/* Celestial image background */
+body {
+    position: relative;
+    isolation: isolate;
+}
+
+.portfolio-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background: #0b0c10;
+}
+
+.portfolio-atmosphere__image {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.72;
+}
+
+/* Blend the image into the portfolio's dark palette. */
+.portfolio-atmosphere::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(11, 12, 16, 0.12),
+        rgba(11, 12, 16, 0.28) 55%,
+        rgba(11, 12, 16, 0.48)
+    );
+}
+
+@media (max-width: 767px) {
+    .portfolio-atmosphere__image {
+        object-position: 75% center;
+        opacity: 0.55;
+    }
+}
+
+@media (forced-colors: active) {
+    .portfolio-atmosphere {
+        display: none;
+    }
+}

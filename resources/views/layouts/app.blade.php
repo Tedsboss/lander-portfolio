@@ -82,6 +82,16 @@
 </head>
 
 <body class="antialiased">
+        {{-- Celestial page background --}}
+        <div class="portfolio-atmosphere" aria-hidden="true">
+            <img
+                class="portfolio-atmosphere__image"
+                src="{{ asset('images/portfolio-background.webp') }}"
+                alt=""
+                decoding="async"
+                fetchpriority="low"
+            >
+        </div>
     @php
         $resumeAvailable = is_file(
             public_path('downloads/lander-resume.pdf')
