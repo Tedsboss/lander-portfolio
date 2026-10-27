@@ -515,7 +515,12 @@
         </div>
 
         <div class="archive-foot">
-            <span data-result-count>
+            <span
+                data-result-count
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+            >
                 {{ $counts[$category] ?? $projectCount }} PROJECTS
             </span>
 
