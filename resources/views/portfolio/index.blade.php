@@ -474,15 +474,27 @@
                 </button>
             </div>
 
-            <label class="search">
+            <div class="search" role="search" aria-label="Search projects">
                 <span aria-hidden="true">⌕</span>
 
                 <input
+                    id="project-search"
                     type="search"
                     placeholder="Find a project…"
                     aria-label="Find a project"
+                    aria-controls="project-archive-list"
                 >
-            </label>
+
+                <button
+                    type="button"
+                    class="project-search-clear"
+                    data-clear-project-search
+                    aria-label="Clear project search"
+                    hidden
+                >
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
         </div>
 
         <div class="archive-header" aria-hidden="true">
@@ -491,7 +503,7 @@
             <span>EXPLORE</span>
         </div>
 
-        <div class="archive-list">
+        <div class="archive-list" id="project-archive-list">
             @foreach ($allProjects as $project)
                 @include('portfolio.partials.archive-row')
             @endforeach

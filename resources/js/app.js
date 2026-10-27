@@ -4,6 +4,7 @@ import './contact.js';
 import './navigation.js';
 import './active-section.js';
 import './back-to-top.js';
+import './project-search.js';
 
 const motionReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)"

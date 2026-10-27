@@ -3142,3 +3142,48 @@ html {
         transition: none;
     }
 }
+
+.archive-toolbar .search {
+    min-width: 0;
+}
+
+.archive-toolbar .search input {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Use our accessible clear button instead of the browser's duplicate. */
+.archive-toolbar .search input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+.archive-toolbar .project-search-clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: #b5afc0;
+    font-size: 23px;
+    cursor: pointer;
+}
+
+.archive-toolbar .project-search-clear[hidden] {
+    display: none;
+}
+
+.archive-toolbar .project-search-clear:hover {
+    background: rgba(237, 207, 150, 0.08);
+    color: #edcf96;
+}
+
+.archive-toolbar .project-search-clear:focus-visible,
+.archive-toolbar .search input:focus-visible {
+    outline: 2px solid #edcf96;
+    outline-offset: 3px;
+}
