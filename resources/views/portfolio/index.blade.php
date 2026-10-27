@@ -692,6 +692,24 @@
                         ↗
                     </span>
                 </a>
+                <div class="contact-email-tools">
+                    <button
+                        type="button"
+                        class="contact-copy-email"
+                        data-copy-email="lander.juntila16@gmail.com"
+                        aria-describedby="contact-copy-status"
+                    >
+                        Copy email address
+                    </button>
+
+                    <span
+                        id="contact-copy-status"
+                        class="contact-copy-status"
+                        role="status"
+                        aria-live="polite"
+                        aria-atomic="true"
+                    ></span>
+                </div>
             </div>
 
             <div
