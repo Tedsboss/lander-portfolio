@@ -76,22 +76,41 @@
         rel="stylesheet"
     >
 
+    <script>
+        (() => {
+            let theme = 'celestial';
+
+            try {
+                const saved = localStorage.getItem(
+                    'lander.portfolio.background.v1'
+                );
+
+                if (['celestial', 'dota', 'plain'].includes(saved)) {
+                    theme = saved;
+                }
+            } catch {
+                // Use the default when browser storage is unavailable.
+            }
+
+            document.documentElement.dataset.backgroundTheme = theme;
+        })();
+    </script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>
 
 <body class="antialiased">
-        {{-- Celestial page background --}}
-        <div class="portfolio-atmosphere" aria-hidden="true">
-            <img
-                class="portfolio-atmosphere__image"
-                src="{{ asset('images/portfolio-background.webp') }}"
-                alt=""
-                decoding="async"
-                fetchpriority="low"
-            >
-        </div>
+        {{-- Decorative background --}}
+        <div
+            class="portfolio-atmosphere"
+            aria-hidden="true"
+            style="
+                --celestial-background: url('{{ asset('images/portfolio-background.webp') }}');
+                --dota-background: url('{{ asset('images/portfolio-dota-background.webp') }}');
+            "
+        ></div>
     @php
         $resumeAvailable = is_file(
             public_path('downloads/lander-resume.pdf')
@@ -245,7 +264,7 @@
     >
         <span aria-hidden="true">↑</span>
     </a>
-
+    @include('portfolio.partials.theme-picker')
     @stack('scripts')
 </body>
 </html>
