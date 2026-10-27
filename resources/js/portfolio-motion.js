@@ -173,46 +173,52 @@ function initPortfolioMotion() {
 
             if (!cards.length) return;
 
+            const carouselLeft = carousel.getBoundingClientRect().left;
+
             let active = 0;
-            let distance = Infinity;
+            let nearestDistance = Infinity;
 
             cards.forEach((card, index) => {
-                const next = Math.abs(
-                    card.offsetLeft - carousel.scrollLeft
+                const distance = Math.abs(
+                    card.getBoundingClientRect().left - carouselLeft
                 );
 
-                if (next < distance) {
-                    distance = next;
+                if (distance < nearestDistance) {
+                    nearestDistance = distance;
                     active = index;
                 }
             });
 
             cards.forEach((card, index) => {
-                card.classList.toggle(
-                    'p4d-active',
-                    index === active
-                );
+                const isActive = index === active;
+
+                card.classList.toggle('p4d-active', isActive);
 
                 const visual = card.querySelector('.card-visual');
-                const offset = Math.max(
+
+                if (!visual) return;
+
+                const relativePosition = Math.max(
                     -2,
                     Math.min(2, index - active)
                 );
 
-                visual?.style.setProperty(
+                visual.style.setProperty(
                     '--p4d-lean',
-                    `${offset * 5}deg`
+                    `${relativePosition * 5}deg`
                 );
 
-                visual?.style.setProperty(
+                visual.style.setProperty(
                     '--p4d-lift',
-                    index === active ? '-6px' : '0px'
+                    isActive ? '-6px' : '0px'
                 );
             });
         }
 
         function schedule() {
-            if (!frame) frame = requestAnimationFrame(update);
+            if (frame) return;
+
+            frame = requestAnimationFrame(update);
         }
 
         carousel.addEventListener('scroll', schedule, {
@@ -224,7 +230,13 @@ function initPortfolioMotion() {
         });
 
         if ('ResizeObserver' in window) {
-            new ResizeObserver(schedule).observe(carousel);
+            const resizeObserver = new ResizeObserver(schedule);
+
+            resizeObserver.observe(carousel);
+
+            cards.forEach((card) => {
+                resizeObserver.observe(card);
+            });
         }
 
         update();
