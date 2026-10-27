@@ -271,6 +271,7 @@
                 </div>
             </aside>
         </div>
+
         @include('portfolio.partials.project-navigation')
     </article>
-@endsection@endsection
+@endsection
