@@ -106,9 +106,10 @@
                 data-nav-toggle
                 aria-controls="portfolio-navigation"
                 aria-expanded="false"
-                aria-label="Toggle navigation"
+                aria-label="Open navigation"
+                hidden
             >
-                <span aria-hidden="true">☰</span>
+                <span data-nav-icon aria-hidden="true">☰</span>
                 <span>Menu</span>
             </button>
 
@@ -158,7 +159,7 @@
         </div>
     </header>
 
-    <main id="main">
+    <main id="main" tabindex="-1">
         @yield('content')
     </main>
 

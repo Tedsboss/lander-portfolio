@@ -3019,3 +3019,69 @@ html {
     font-size: 12px;
     line-height: 1.6;
 }
+
+/* Navigation accessibility refinements */
+.portfolio-menu-toggle[hidden] {
+    display: none !important;
+}
+
+.portfolio-header .portfolio-menu-toggle {
+    width: auto;
+    min-width: 44px;
+    min-height: 44px;
+    height: 44px;
+    gap: 8px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.portfolio-menu-toggle [data-nav-icon] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    font-size: 23px;
+    line-height: 1;
+}
+
+.portfolio-header a:focus-visible,
+.portfolio-header button:focus-visible {
+    outline: 2px solid #edcf96;
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+
+.skip {
+    z-index: 100;
+}
+
+.skip:focus-visible {
+    outline: 2px solid #edcf96;
+    outline-offset: 4px;
+}
+
+#main:focus {
+    outline: none;
+}
+
+@media (max-width: 900px) {
+    .portfolio-header[data-nav-ready] .portfolio-links {
+        max-height: calc(100vh - 110px);
+        max-height: calc(100dvh - 110px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    .portfolio-header .portfolio-links > a {
+        min-height: 48px;
+    }
+
+    .portfolio-header .portfolio-links > a:focus-visible {
+        background: #1b2214;
+        color: #edcf96;
+        outline-offset: -2px;
+    }
+}

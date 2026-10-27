@@ -1,6 +1,7 @@
 import './portfolio-motion.js';
 import './project-gallery.js';
 import './contact.js';
+import './navigation.js';
 
 const motionReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
@@ -101,101 +102,6 @@ function applyFilters() {
         empty.hidden = visible > 0;
     }
 }
-
-// Responsive portfolio navigation.
-(() => {
-    const header = document.querySelector(
-        "[data-portfolio-header]"
-    );
-
-    const toggle = header?.querySelector(
-        "[data-nav-toggle]"
-    );
-
-    const panel = header?.querySelector(
-        "[data-nav-panel]"
-    );
-
-    const icon = toggle?.querySelector(
-        "[data-nav-icon]"
-    );
-
-    if (
-        !header ||
-        !toggle ||
-        !panel ||
-        header.dataset.navReady
-    ) {
-        return;
-    }
-
-    const mobile = window.matchMedia(
-        "(max-width: 900px)"
-    );
-
-    function setOpen(open, restoreFocus = false) {
-        const expanded = open && mobile.matches;
-
-        header.dataset.navOpen = String(expanded);
-
-        toggle.setAttribute(
-            "aria-expanded",
-            String(expanded)
-        );
-
-        toggle.setAttribute(
-            "aria-label",
-            expanded
-                ? "Close navigation"
-                : "Open navigation"
-        );
-
-        if (icon) {
-            icon.textContent = expanded ? "×" : "☰";
-        }
-
-        if (restoreFocus) {
-            toggle.focus();
-        }
-    }
-
-    header.dataset.navReady = "true";
-    toggle.hidden = false;
-
-    setOpen(false);
-
-    toggle.addEventListener("click", () => {
-        setOpen(header.dataset.navOpen !== "true");
-    });
-
-    panel.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => {
-            setOpen(false);
-        });
-    });
-
-    document.addEventListener("keydown", (event) => {
-        if (
-            event.key === "Escape" &&
-            header.dataset.navOpen === "true"
-        ) {
-            setOpen(false, true);
-        }
-    });
-
-    document.addEventListener("click", (event) => {
-        if (
-            header.dataset.navOpen === "true" &&
-            !header.contains(event.target)
-        ) {
-            setOpen(false);
-        }
-    });
-
-    mobile.addEventListener("change", () => {
-        setOpen(false);
-    });
-})();
 
 // Synchronize save buttons and collection counts.
 function syncSaved() {
