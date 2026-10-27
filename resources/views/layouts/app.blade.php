@@ -23,12 +23,12 @@
 
         $socialImage = trim($__env->yieldContent(
             'social_image',
-            asset('images/lander-celestial.png')
+            asset('images/lander-social-preview.png')
         ));
 
         $socialImageAlt = trim($__env->yieldContent(
             'social_image_alt',
-            'Lander celestial branding'
+            'Marlon Lander Ortega — Senior Software Developer, with gold celestial branding and purple amethyst accents'
         ));
     @endphp
 
