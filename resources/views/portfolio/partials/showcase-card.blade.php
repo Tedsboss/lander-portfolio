@@ -1,18 +1,23 @@
 @php
     $screenshots = collect(
-        config('project_screenshots.'.$project['id'], [])
+        config('project_screenshots.' . $project['id'], [])
     )
         ->filter(
-            fn ($caption, $path) => is_file(
-                public_path('images/'.$path)
-            )
+            fn ($caption, $path) =>
+                is_file(public_path('images/' . $path))
         )
-        ->map(
-            fn ($caption, $path) => [
-                'src' => asset('images/'.$path),
+        ->map(function ($caption, $path) {
+            $previewPath = 'images/optimized/cards/' . $path . '.webp';
+
+            return [
+                'src' => asset(
+                    is_file(public_path($previewPath))
+                        ? $previewPath
+                        : 'images/' . $path
+                ),
                 'caption' => $caption,
-            ]
-        )
+            ];
+        })
         ->values();
 
     $cover = $screenshots->first();
