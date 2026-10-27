@@ -1,5 +1,251 @@
 @extends('layouts.app')
 
+@push('styles')
+    <style>
+        /* Contact section */
+        .lander-contact {
+            padding-top: 28px;
+            padding-bottom: 80px;
+            scroll-margin-top: 110px;
+        }
+
+        .lander-contact .lander-contact__panel {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            align-items: center;
+            gap: clamp(32px, 5vw, 80px);
+            padding: clamp(24px, 5vw, 64px);
+            overflow: hidden;
+            border: 1px solid rgba(237, 207, 150, 0.22);
+            border-radius: 24px;
+            background:
+                radial-gradient(
+                    ellipse at 100% 0%,
+                    rgba(152, 82, 214, 0.14),
+                    transparent 55%
+                ),
+                radial-gradient(
+                    ellipse at 0% 100%,
+                    rgba(237, 207, 150, 0.07),
+                    transparent 55%
+                ),
+                #111116;
+        }
+
+        .lander-contact .lander-contact__intro,
+        .lander-contact .lander-contact__profiles {
+            min-width: 0;
+        }
+
+        .lander-contact .lander-contact__eyebrow,
+        .lander-contact .lander-contact__profiles-label,
+        .lander-contact .lander-contact__label,
+        .lander-contact .lander-contact__signature {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 10px;
+            font-weight: 500;
+            line-height: 1.6;
+            letter-spacing: 0.14em;
+        }
+
+        .lander-contact .lander-contact__eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #edcf96;
+        }
+
+        .lander-contact .lander-contact__eyebrow > span {
+            font-size: 18px;
+        }
+
+        .lander-contact .lander-contact__title {
+            margin: 20px 0 0;
+            color: #f5f2f8;
+            font-size: clamp(30px, 3.6vw, 48px);
+            font-weight: 600;
+            line-height: 1.14;
+            letter-spacing: -0.045em;
+            text-transform: none;
+        }
+
+        .lander-contact .lander-contact__title > span {
+            display: block;
+            color: #edcf96;
+        }
+
+        .lander-contact .lander-contact__description {
+            max-width: 440px;
+            margin: 20px 0 0;
+            color: #b5afc0;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .lander-contact .lander-contact__email {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(237, 207, 150, 0.16);
+            color: #f5f2f8;
+            text-decoration: none;
+        }
+
+        .lander-contact .lander-contact__email > span:first-child {
+            min-width: 0;
+        }
+
+        .lander-contact .lander-contact__label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a59bad;
+        }
+
+        .lander-contact .lander-contact__address {
+            display: block;
+            font-size: clamp(14px, 1.6vw, 19px);
+            font-weight: 500;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .lander-contact .lander-contact__arrow {
+            display: grid;
+            flex: 0 0 44px;
+            width: 44px;
+            height: 44px;
+            place-items: center;
+            border: 1px solid rgba(237, 207, 150, 0.3);
+            border-radius: 50%;
+            color: #edcf96;
+            font-size: 22px;
+            transition: background 180ms ease, color 180ms ease;
+        }
+
+        .lander-contact .lander-contact__email:hover .lander-contact__arrow {
+            background: #edcf96;
+            color: #111116;
+        }
+
+        .lander-contact .lander-contact__profiles-label {
+            margin: 0 0 14px;
+            color: #a59bad;
+        }
+
+        .lander-contact .lander-contact__profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-height: 94px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.025);
+            color: #f5f2f8;
+            text-decoration: none;
+            transition:
+                transform 180ms ease,
+                border-color 180ms ease,
+                background 180ms ease;
+        }
+
+        .lander-contact .lander-contact__profile + .lander-contact__profile {
+            margin-top: 12px;
+        }
+
+        .lander-contact .lander-contact__profile:hover {
+            transform: translateY(-3px);
+            border-color: rgba(198, 160, 238, 0.5);
+            background: rgba(152, 82, 214, 0.08);
+        }
+
+        .lander-contact .lander-contact__icon {
+            display: grid;
+            flex: 0 0 42px;
+            width: 42px;
+            height: 42px;
+            place-items: center;
+            border: 1px solid rgba(198, 160, 238, 0.18);
+            border-radius: 12px;
+            background: rgba(152, 82, 214, 0.1);
+            color: #d8b8f5;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .lander-contact .lander-contact__profile-copy {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lander-contact .lander-contact__profile-copy strong {
+            display: block;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .lander-contact .lander-contact__profile-copy > span {
+            display: block;
+            margin-top: 5px;
+            color: #b5afc0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .lander-contact .lander-contact__profile-arrow {
+            flex-shrink: 0;
+            color: #c6a0ee;
+            font-size: 21px;
+        }
+
+        .lander-contact .lander-contact__signature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 22px;
+            color: #a59bad;
+            font-size: 9px;
+        }
+
+        .lander-contact a:focus-visible {
+            outline: 2px solid #edcf96;
+            outline-offset: 5px;
+        }
+
+        @media (max-width: 767px) {
+            .lander-contact {
+                padding-bottom: 56px;
+            }
+
+            .lander-contact .lander-contact__panel {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 32px;
+                border-radius: 18px;
+            }
+
+            .lander-contact .lander-contact__profile {
+                gap: 12px;
+                padding: 16px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .lander-contact .lander-contact__profile,
+            .lander-contact .lander-contact__arrow {
+                transition: none;
+            }
+
+            .lander-contact .lander-contact__profile:hover {
+                transform: none;
+            }
+        }
+    </style>
+@endpush
+
 @section('content')
     @php
         $resumeAvailable = is_file(
@@ -8,6 +254,7 @@
 
         $showcaseProjects = $allProjects->take(5);
         $projectCount = $allProjects->count();
+
         $communityProjects = $allProjects->where(
             'category',
             'community'
@@ -18,10 +265,7 @@
     @endphp
 
     {{-- Hero --}}
-    <section
-        class="hero shell"
-        aria-labelledby="hero-title"
-    >
+    <section class="hero shell" aria-labelledby="hero-title">
         <div class="hero-copy">
             <div class="eyebrow">
                 <span class="live-dot" aria-hidden="true"></span>
@@ -61,10 +305,7 @@
                     MADE TO MAKE A DIFFERENCE.
                 </span>
 
-                <span
-                    class="signature-line"
-                    aria-hidden="true"
-                ></span>
+                <span class="signature-line" aria-hidden="true"></span>
             </div>
         </div>
 
@@ -207,18 +448,12 @@
             >
                 @foreach ($filters as $key => $label)
                     <a
-                        href="{{ route(
-                            'portfolio.index',
-                            $key === 'all' ? [] : ['category' => $key]
-                        ) }}#projects"
-
+                        href="{{ route('portfolio.index', $key === 'all' ? [] : ['category' => $key]) }}#projects"
                         @class([
                             'filter',
                             'active' => $category === $key,
                         ])
-
                         data-filter="{{ $key }}"
-
                         @if ($category === $key)
                             aria-current="page"
                         @endif
@@ -313,10 +548,7 @@
                 @endforeach
 
                 <div class="collection-panel">
-                    <span
-                        class="community-icon"
-                        aria-hidden="true"
-                    >
+                    <span class="community-icon" aria-hidden="true">
                         ⌘
                     </span>
 
@@ -360,7 +592,7 @@
         aria-labelledby="about-title"
     >
         <div class="about-identity">
-            <x-brand variant="icon" class="mb-6" />
+            <x-brand variant="icon" />
 
             <span class="eyebrow">
                 MEET THE BUILDER
@@ -412,6 +644,125 @@
                 @foreach (config('portfolio.skills', []) as $skill)
                     <span>{{ $skill }}</span>
                 @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- Contact: separate from the About grid --}}
+    <section
+        id="contact"
+        class="lander-contact shell"
+        aria-labelledby="contact-title"
+    >
+        <div class="lander-contact__panel">
+            <div class="lander-contact__intro">
+                <span class="lander-contact__eyebrow">
+                    <span aria-hidden="true">✦</span>
+                    NEXT CONNECTION
+                </span>
+
+                <h2 id="contact-title" class="lander-contact__title">
+                    Good things start
+                    <span>with a conversation.</span>
+                </h2>
+
+                <p class="lander-contact__description">
+                    Have an idea, a project, or a question?
+                    Let’s connect and see what we can build together.
+                </p>
+
+                <a
+                    class="lander-contact__email"
+                    href="mailto:lander.juntila16@gmail.com"
+                >
+                    <span>
+                        <span class="lander-contact__label">
+                            EMAIL ME
+                        </span>
+
+                        <span class="lander-contact__address">
+                            lander.juntila16@gmail.com
+                        </span>
+                    </span>
+
+                    <span
+                        class="lander-contact__arrow"
+                        aria-hidden="true"
+                    >
+                        ↗
+                    </span>
+                </a>
+            </div>
+
+            <div
+                class="lander-contact__profiles"
+                role="group"
+                aria-label="Professional profiles"
+            >
+                <p class="lander-contact__profiles-label">
+                    FIND ME ONLINE
+                </p>
+
+                <a
+                    class="lander-contact__profile"
+                    href="https://github.com/Tedsboss"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Tedsboss on GitHub, opens in a new tab"
+                >
+                    <span
+                        class="lander-contact__icon"
+                        aria-hidden="true"
+                    >
+                        &lt;/&gt;
+                    </span>
+
+                    <span class="lander-contact__profile-copy">
+                        <strong>GitHub</strong>
+                        <span>Code, projects, and experiments</span>
+                    </span>
+
+                    <span
+                        class="lander-contact__profile-arrow"
+                        aria-hidden="true"
+                    >
+                        ↗
+                    </span>
+                </a>
+
+                <a
+                    class="lander-contact__profile"
+                    href="https://www.linkedin.com/in/lander-ortega/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Marlon Lander Ortega on LinkedIn, opens in a new tab"
+                >
+                    <span
+                        class="lander-contact__icon"
+                        aria-hidden="true"
+                    >
+                        in
+                    </span>
+
+                    <span class="lander-contact__profile-copy">
+                        <strong>LinkedIn</strong>
+                        <span>
+                            Experience and professional connections
+                        </span>
+                    </span>
+
+                    <span
+                        class="lander-contact__profile-arrow"
+                        aria-hidden="true"
+                    >
+                        ↗
+                    </span>
+                </a>
+
+                <div class="lander-contact__signature">
+                    <span aria-hidden="true">✧</span>
+                    BASED IN THE PHILIPPINES
+                </div>
             </div>
         </div>
     </section>

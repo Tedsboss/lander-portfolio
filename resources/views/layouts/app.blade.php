@@ -94,6 +94,9 @@
                 <a href="{{ route('portfolio.index') }}#about">
                     About
                 </a>
+                <a href="{{ route('portfolio.index') }}#contact">
+                    Contact
+                </a>
 
                 @if ($resumeAvailable)
                     <a
