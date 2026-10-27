@@ -7,6 +7,14 @@
             'celestial-brand--hero',
         ]) }}
     >
+    <picture class="celestial-brand__picture">
+        @if (is_file(public_path('images/lander-celestial.webp')))
+            <source
+                srcset="{{ asset('images/lander-celestial.webp') }}"
+                type="image/webp"
+            >
+        @endif
+
         <img
             class="celestial-brand__art"
             src="{{ asset('images/lander-celestial.png') }}"
@@ -16,6 +24,7 @@
             fetchpriority="high"
             decoding="async"
         >
+    </picture>
     </figure>
 @else
     <a

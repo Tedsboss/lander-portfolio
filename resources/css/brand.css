@@ -129,3 +129,8 @@
         transition: none;
     }
 }
+
+.celestial-brand__picture {
+    display: block;
+    width: 100%;
+}
