@@ -1,0 +1,269 @@
+/* Motion controls */
+[data-p4d] .hero-buttons {
+    flex-wrap: wrap;
+}
+
+.p4d-toggle {
+    padding: 9px 12px;
+    border: 1px solid #6ce8ef55;
+    border-radius: 999px;
+    background: #121720;
+    color: #c8eff3;
+    font: 11px/1.4 var(--mono, monospace);
+    cursor: pointer;
+}
+
+.p4d-toggle[hidden] {
+    display: none;
+}
+
+.p4d-toggle:hover {
+    border-color: #6ce8ef;
+}
+
+.p4d-toggle:focus-visible {
+    outline: 2px solid #d2ff5a;
+    outline-offset: 4px;
+}
+
+/* Interactive hero */
+.hero-scene.p4d-scene {
+    --p4d-x: 50%;
+    --p4d-y: 50%;
+    --p4d-rx: 0deg;
+    --p4d-ry: 0deg;
+}
+
+.hero-scene.p4d-scene::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: radial-gradient(
+        circle at var(--p4d-x) var(--p4d-y),
+        #6ce8ef17,
+        transparent 58%
+    );
+    pointer-events: none;
+}
+
+.hero-scene.p4d-scene .cube-wrap {
+    z-index: 1;
+    transform:
+        rotateX(var(--p4d-rx))
+        rotateY(var(--p4d-ry));
+    transition: transform 180ms ease-out;
+}
+
+.hero-scene.p4d-scene .cube {
+    animation: p4d-core 12s ease-in-out infinite;
+}
+
+.hero-scene.p4d-scene .scene-grid {
+    animation: p4d-grid 12s linear infinite;
+}
+
+.hero-scene.p4d-scene .orbit {
+    z-index: 1;
+}
+
+.hero-scene.p4d-scene .orbit::after {
+    animation: p4d-beacon 4s ease-in-out infinite;
+}
+
+.hero-scene.p4d-scene .orbit-b::after {
+    animation-delay: -2s;
+}
+
+/* Floating particles */
+.p4d-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 24px;
+    pointer-events: none;
+}
+
+.p4d-particles > span {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #6ce8ef;
+    box-shadow: 0 0 10px #6ce8ef99;
+    animation: p4d-drift 9s ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+.p4d-particles > span:nth-child(3n) {
+    background: #d2ff5a;
+    box-shadow: 0 0 10px #d2ff5a88;
+}
+
+/* Project carousel depth */
+.carousel.p4d-carousel {
+    position: relative;
+}
+
+.p4d-carousel .showcase-card {
+    transition:
+        border-color 200ms ease,
+        box-shadow 200ms ease;
+}
+
+.p4d-carousel .showcase-card.p4d-active,
+.p4d-carousel .showcase-card:focus-within {
+    border-color: var(--accent, #d2ff5a);
+    box-shadow: inset 0 0 0 1px #ffffff08;
+}
+
+.p4d-carousel .card-visual {
+    --p4d-x: 50%;
+    --p4d-y: 50%;
+    --p4d-rx: 0deg;
+    --p4d-ry: 0deg;
+}
+
+.p4d-carousel .card-visual::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at var(--p4d-x) var(--p4d-y),
+        #ffffff16,
+        transparent 55%
+    );
+}
+
+[data-p4d="running"]
+.p4d-carousel
+.showcase-card
+.cover-device {
+    transform:
+        translateY(var(--p4d-lift, 0px))
+        rotateX(calc(12deg + var(--p4d-rx)))
+        rotateY(
+            calc(
+                -17deg +
+                var(--p4d-lean, 0deg) +
+                var(--p4d-ry)
+            )
+        )
+        rotateZ(-5deg);
+    transition: transform 220ms ease-out;
+}
+
+/* Motion sequences */
+@keyframes p4d-core {
+    0%,
+    100% {
+        transform:
+            rotateX(-22deg)
+            rotateY(-32deg)
+            rotateZ(8deg);
+    }
+
+    50% {
+        transform:
+            rotateX(-14deg)
+            rotateY(-12deg)
+            rotateZ(3deg);
+    }
+}
+
+@keyframes p4d-grid {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0 38px;
+    }
+}
+
+@keyframes p4d-beacon {
+    0%,
+    100% {
+        opacity: 0.55;
+        scale: 0.85;
+    }
+
+    50% {
+        opacity: 1;
+        scale: 1.15;
+    }
+}
+
+@keyframes p4d-drift {
+    0%,
+    100% {
+        transform: translate3d(0, 12px, 0);
+        opacity: 0.25;
+    }
+
+    50% {
+        transform: translate3d(12px, -18px, 0);
+        opacity: 0.85;
+    }
+}
+
+/* Pause animations when requested or outside the viewport */
+[data-p4d="paused"] .p4d-scene *,
+[data-p4d="paused"] .p4d-scene *::before,
+[data-p4d="paused"] .p4d-scene *::after,
+.p4d-scene.p4d-offscreen *,
+.p4d-scene.p4d-offscreen *::before,
+.p4d-scene.p4d-offscreen *::after {
+    animation-play-state: paused !important;
+}
+
+[data-p4d="paused"] .p4d-scene .cube-wrap {
+    transform: none !important;
+}
+
+[data-p4d="paused"] .p4d-carousel .cover-device,
+[data-p4d="paused"]
+.p4d-carousel
+.showcase-card:hover
+.cover-device {
+    transform:
+        rotateX(12deg)
+        rotateY(-17deg)
+        rotateZ(-5deg);
+    transition: none;
+}
+
+/* Lightweight mobile and reduced-motion presentation */
+@media (max-width: 767px), (prefers-reduced-motion: reduce) {
+    .hero-scene.p4d-scene .cube,
+    .hero-scene.p4d-scene .cube-wrap,
+    .hero-scene.p4d-scene .scene-grid,
+    .hero-scene.p4d-scene .orbit::after,
+    .p4d-particles > span {
+        animation: none !important;
+    }
+
+    .p4d-particles {
+        display: none;
+    }
+
+    .hero-scene.p4d-scene .cube {
+        transform:
+            rotateX(-22deg)
+            rotateY(-32deg)
+            rotateZ(8deg);
+    }
+
+    .hero-scene.p4d-scene .cube-wrap {
+        transform: none !important;
+        transition: none;
+    }
+
+    .p4d-carousel .showcase-card {
+        transition: none;
+    }
+}

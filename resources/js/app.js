@@ -1,3 +1,5 @@
+import './portfolio-motion.js';
+
 const motionReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
 );
