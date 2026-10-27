@@ -86,7 +86,7 @@
         <div class="portfolio-atmosphere" aria-hidden="true">
             <img
                 class="portfolio-atmosphere__image"
-                src="{{ asset('images/portfolio-background.webp') }}"
+                src="{{ asset('images/portfolio-dota-background.png') }}"
                 alt=""
                 decoding="async"
                 fetchpriority="low"

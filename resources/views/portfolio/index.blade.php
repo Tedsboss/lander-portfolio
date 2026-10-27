@@ -510,8 +510,25 @@
         </div>
 
         <div class="archive-empty" hidden>
-            No projects match your selection.
-            Try another filter or save a project with the + button.
+            <span class="archive-empty__symbol" aria-hidden="true">
+                ⌕
+            </span>
+
+            <h3>No matching projects</h3>
+
+            <p>
+                Try another search or category.
+                You can also reset the view to explore all projects.
+            </p>
+
+            <button
+                type="button"
+                class="btn btn-lime"
+                data-reset-project-search
+            >
+                Show all projects
+                <span aria-hidden="true">↗</span>
+            </button>
         </div>
 
         <div class="archive-foot">
