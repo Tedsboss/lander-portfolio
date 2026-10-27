@@ -438,44 +438,79 @@ if (carousel) {
 const shareDialog = document.querySelector('.share-dialog');
 
 let shareOpener;
+let nativeSharePending = false;
 
-document.querySelectorAll('[data-share]').forEach((button) => {
-    button.addEventListener('click', () => {
-        if (!shareDialog || !button.dataset.share) return;
+    document.querySelectorAll('[data-share]').forEach((button) => {
+        button.addEventListener('click', async () => {
+            if (!button.dataset.share || nativeSharePending) return;
 
-        const field = shareDialog.querySelector('input');
-        const heading = shareDialog.querySelector('h2');
+            let shareUrl;
 
-        if (!field) return;
+            try {
+                shareUrl = new URL(
+                    button.dataset.share,
+                    window.location.href
+                );
 
-        let shareUrl;
+                if (!['https:', 'http:'].includes(shareUrl.protocol)) {
+                    throw new Error('Unsupported link');
+                }
+            } catch {
+                notify('The project link could not be opened.');
+                return;
+            }
 
-        try {
-            shareUrl = new URL(
-                button.dataset.share,
-                window.location.href
-            );
-        } catch {
-            notify('The project link could not be opened.');
-            return;
-        }
+            const name = button.dataset.shareName || 'this project';
 
-        shareOpener = button;
-        field.value = shareUrl.href;
+            if (
+                window.isSecureContext &&
+                typeof navigator.share === 'function'
+            ) {
+                nativeSharePending = true;
 
-        if (heading) {
-            heading.textContent =
-                `Share ${button.dataset.shareName || 'this project'}`;
-        }
+                try {
+                    await navigator.share({
+                        title: `${name} — Lander`,
+                        text: `Explore ${name} in Lander’s project portfolio.`,
+                        url: shareUrl.href,
+                    });
 
-        if (!shareDialog.open) {
-            shareDialog.showModal();
-        }
+                    return;
+                } catch (error) {
+                    // Dismissing the share menu needs no error notification.
+                    if (error.name === 'AbortError') {
+                        return;
+                    }
 
-        field.focus();
-        field.select();
+                    // Other failures fall back to the copy-link dialog.
+                } finally {
+                    nativeSharePending = false;
+                }
+            }
+
+            const field = shareDialog?.querySelector('input');
+            const heading = shareDialog?.querySelector('h2');
+
+            if (!shareDialog || !field) {
+                notify('Sharing is currently unavailable.');
+                return;
+            }
+
+            shareOpener = button;
+            field.value = shareUrl.href;
+
+            if (heading) {
+                heading.textContent = `Share ${name}`;
+            }
+
+            if (!shareDialog.open) {
+                shareDialog.showModal();
+            }
+
+            field.focus();
+            field.select();
+        });
     });
-});
 
 document
     .querySelector('[data-copy-share]')
