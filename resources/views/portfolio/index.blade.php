@@ -807,38 +807,48 @@
                 </h2>
 
                 <p>
-                    A closer look at my professional experience,
-                    project contributions, education, and technical
-                    skills. Download my résumé to read offline.
+                    Explore my professional experience, project contributions,
+                    education, and technical skills. View my résumé online
+                    or download a copy to read offline.
                 </p>
 
-                @if ($resumeAvailable)
+            @if ($resumeAvailable)
+                <div class="resume-actions">
                     <a
                         class="btn btn-lime"
                         href="{{ asset('downloads/lander-resume.pdf') }}"
-                        download="Lander-Resume.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="View Lander’s résumé PDF in a new tab"
                     >
-                        Download résumé
-                        <span aria-hidden="true">↓</span>
+                        View résumé
+                        <span aria-hidden="true">↗</span>
                     </a>
 
-                    <small>
-                        PDF FORMAT
-                        <span aria-hidden="true">✦</span>
-                        PROFESSIONAL RÉSUMÉ
-                    </small>
-                @else
-                    <span
-                        class="btn btn-lime"
-                        aria-disabled="true"
+                    <a
+                        class="text-link resume-download-link"
+                        href="{{ asset('downloads/lander-resume.pdf') }}"
+                        download="Lander-Resume.pdf"
                     >
-                        Résumé available soon
-                    </span>
+                        Download PDF
+                        <span aria-hidden="true">↓</span>
+                    </a>
+                </div>
 
-                    <small>
-                        MY UPDATED RÉSUMÉ WILL BE AVAILABLE HERE
-                    </small>
-                @endif
+                <small>
+                    PDF FORMAT
+                    <span aria-hidden="true">✦</span>
+                    VIEW ONLINE OR SAVE A COPY
+                </small>
+            @else
+                <span class="resume-unavailable">
+                    Résumé available soon
+                </span>
+
+                <small>
+                    MY UPDATED RÉSUMÉ WILL BE AVAILABLE HERE
+                </small>
+            @endif
             </div>
         </div>
     </section>
