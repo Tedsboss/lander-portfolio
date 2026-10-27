@@ -226,6 +226,16 @@
         </button>
     </dialog>
 
+    <a
+        href="#main"
+        class="portfolio-back-top"
+        data-back-top
+        aria-label="Back to top"
+        hidden
+    >
+        <span aria-hidden="true">↑</span>
+    </a>
+
     @stack('scripts')
 </body>
 </html>

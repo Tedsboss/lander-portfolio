@@ -3100,3 +3100,45 @@ html {
         box-shadow: inset 3px 0 0 #edcf96;
     }
 }
+
+.portfolio-back-top {
+    position: fixed;
+    right: max(20px, env(safe-area-inset-right));
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    z-index: 40;
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border: 1px solid rgba(237, 207, 150, 0.45);
+    border-radius: 50%;
+    background: #17131f;
+    color: #edcf96;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+    font-size: 24px;
+    line-height: 1;
+    text-decoration: none;
+    transition:
+        background 180ms ease,
+        color 180ms ease;
+}
+
+.portfolio-back-top[hidden] {
+    display: none;
+}
+
+.portfolio-back-top:hover {
+    background: #edcf96;
+    color: #111116;
+}
+
+.portfolio-back-top:focus-visible {
+    outline: 2px solid #edcf96;
+    outline-offset: 5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .portfolio-back-top {
+        transition: none;
+    }
+}

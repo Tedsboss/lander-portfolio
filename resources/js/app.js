@@ -3,6 +3,7 @@ import './project-gallery.js';
 import './contact.js';
 import './navigation.js';
 import './active-section.js';
+import './back-to-top.js';
 
 const motionReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
