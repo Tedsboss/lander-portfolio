@@ -36,6 +36,7 @@ return [
         ],
         [
             'id' => 'npmcs',
+            'url' => 'https://npmcs.depdev.gov.ph/',
             'code' => 'NPMCS',
             'name' => 'National Project Monitoring Committee System',
             'category' => 'government',
@@ -49,6 +50,7 @@ return [
         ],
         [
             'id' => 'eigis',
+            'url' => 'https://eigis-innovation.depdev.gov.ph/',
             'code' => 'EIGIS',
             'name' => 'Electronic Innovation Grants Information System',
             'category' => 'government',
@@ -62,6 +64,7 @@ return [
         ],
         [
             'id' => 'icc',
+            'url' => 'https://icc-portal.depdev.gov.ph/',
             'code' => 'ICC',
             'name' => 'Investment Coordination Committee Portal',
             'category' => 'government',
@@ -72,6 +75,7 @@ return [
         ],
         [
             'id' => 'ppms',
+            'url' => 'https://ppms.depdev.gov.ph/',
             'code' => 'PPMS',
             'name' => 'Programs and Projects Monitoring System',
             'category' => 'government',
@@ -115,6 +119,7 @@ return [
         ],
         [
             'id' => 'timta',
+            'url' => 'https://timta.depdev.gov.ph/login',
             'code' => 'TIMTA',
             'name' => 'Tax Incentives Management and Transparency Act Online Data Collection',
             'category' => 'maintenance',

@@ -2,6 +2,7 @@ import './portfolio-motion.js';
 import './project-gallery.js';
 import './contact.js';
 import './navigation.js';
+import './active-section.js';
 
 const motionReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
