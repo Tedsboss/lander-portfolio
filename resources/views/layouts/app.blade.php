@@ -6,25 +6,64 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#0b0c10">
 
-    <meta
-        name="description"
-        content="Lander — Senior Software Developer. Government platforms, community systems, and software built with purpose."
-    >
+    @php
+        $siteName = config('portfolio.name', 'Lander');
 
-    <title>
-        @yield(
+        $pageTitle = trim($__env->yieldContent(
             'title',
-            config('portfolio.name', 'Lander').' — '.
-            config('portfolio.role', 'Senior Software Developer')
-        )
-    </title>
+            $siteName . ' — Senior Software Developer'
+        ));
 
+        $pageDescription = trim($__env->yieldContent(
+            'description',
+            'Explore Lander’s software development projects, including government information systems, project monitoring platforms, and community applications.'
+        ));
+
+        $pageUrl = url()->current();
+
+        $socialImage = trim($__env->yieldContent(
+            'social_image',
+            asset('images/lander-celestial.png')
+        ));
+
+        $socialImageAlt = trim($__env->yieldContent(
+            'social_image_alt',
+            'Lander celestial branding'
+        ));
+    @endphp
+
+    <title>{{ $pageTitle }}</title>
+
+    <meta name="description" content="{{ $pageDescription }}">
+    <meta name="author" content="Marlon Lander Ortega">
+
+    <link rel="canonical" href="{{ $pageUrl }}">
+
+    {{-- Browser icon --}}
     <link
         rel="icon"
-        href="{{ asset('favicon.svg') }}?v=2"
         type="image/svg+xml"
+        href="{{ asset('favicon.svg') }}?v=2"
     >
 
+    {{-- Social sharing --}}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:locale" content="en_PH">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $pageDescription }}">
+    <meta property="og:url" content="{{ $pageUrl }}">
+    <meta property="og:image" content="{{ $socialImage }}">
+    <meta property="og:image:alt" content="{{ $socialImageAlt }}">
+
+    {{-- X / Twitter sharing --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $pageDescription }}">
+    <meta name="twitter:image" content="{{ $socialImage }}">
+    <meta name="twitter:image:alt" content="{{ $socialImageAlt }}">
+
+    {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         rel="preconnect"
@@ -33,7 +72,7 @@
     >
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         rel="stylesheet"
     >
 

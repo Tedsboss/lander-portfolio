@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section(
-    'title',
-    $project['code'].' — '.config('portfolio.name', 'Lander')
-)
+@section('title', $project['code'] . ' — ' . config('portfolio.name'))
+
+@section('description', $project['description'])
 
 @section('content')
+    {{-- Keep your existing project details, gallery, and navigation here. --}}
     @php
         $screenshots = collect(
             config('project_screenshots.'.$project['id'], [])
@@ -271,5 +271,6 @@
                 </div>
             </aside>
         </div>
+        @include('portfolio.partials.project-navigation')
     </article>
-@endsection
+@endsection@endsection
