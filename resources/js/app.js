@@ -7,6 +7,7 @@ import './back-to-top.js';
 import './project-search.js';
 import './background-theme.js';
 import './analytics.js';
+import './archive-share.js';
 
 // Shared settings.
 const motionReduced = window.matchMedia(

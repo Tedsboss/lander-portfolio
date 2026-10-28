@@ -3515,3 +3515,76 @@ html[data-background-theme="plain"] .portfolio-atmosphere::before {
         outline: 2px solid Highlight;
     }
 }
+
+.archive-toolbar {
+    flex-wrap: wrap;
+}
+
+.archive-share {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.archive-share__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1px solid rgba(237, 207, 150, 0.3);
+    border-radius: 8px;
+    background: #17131f;
+    color: #edcf96;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.archive-share__button:hover {
+    background: #24202b;
+    border-color: #edcf96;
+}
+
+.archive-share__button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.archive-share__status {
+    color: #c6a0ee;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.archive-share__fallback {
+    flex: 1 0 100%;
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #51435e;
+    border-radius: 8px;
+    background: #111116;
+    color: #f5f2f8;
+    font-size: 12px;
+}
+
+.archive-share__fallback[hidden] {
+    display: none;
+}
+
+.archive-share__button:focus-visible,
+.archive-share__fallback:focus-visible {
+    outline: 2px solid #edcf96;
+    outline-offset: 4px;
+}
+
+@media (max-width: 767px) {
+    .archive-share {
+        flex-basis: 100%;
+    }
+}

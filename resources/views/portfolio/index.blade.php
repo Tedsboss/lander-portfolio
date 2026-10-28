@@ -495,6 +495,32 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
+            <div class="archive-share">
+                <button
+                    type="button"
+                    class="archive-share__button"
+                    data-copy-archive-link
+                >
+                    Copy view link
+                    <span aria-hidden="true">↗</span>
+                </button>
+
+                <span
+                    class="archive-share__status"
+                    data-archive-share-status
+                    role="status"
+                    aria-live="polite"
+                ></span>
+
+                <input
+                    class="archive-share__fallback"
+                    data-archive-share-fallback
+                    type="text"
+                    aria-label="Filtered project archive link"
+                    readonly
+                    hidden
+                >
+            </div>
         </div>
 
         <div class="archive-header" aria-hidden="true">
