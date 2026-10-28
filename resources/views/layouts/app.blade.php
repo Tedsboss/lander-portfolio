@@ -102,15 +102,17 @@
 </head>
 
 <body class="antialiased">
-        {{-- Decorative background --}}
-        <div
-            class="portfolio-atmosphere"
-            aria-hidden="true"
-            style="
-                --celestial-background: url('{{ asset('images/portfolio-background.webp') }}');
-                --dota-background: url('{{ asset('images/portfolio-dota-background.webp') }}');
-            "
-        ></div>
+    {{-- Decorative background --}}
+    <div
+        class="portfolio-atmosphere"
+        aria-hidden="true"
+        style="
+            --celestial-background: url('{{ asset('images/portfolio-background.webp') }}');
+            --celestial-background-mobile: url('{{ asset('images/portfolio-background-mobile.webp') }}');
+            --dota-background: url('{{ asset('images/portfolio-dota-background.webp') }}');
+            --dota-background-mobile: url('{{ asset('images/portfolio-dota-background-mobile.webp') }}');
+        "
+    ></div>
     @php
         $resumeAvailable = is_file(
             public_path('downloads/lander-resume.pdf')

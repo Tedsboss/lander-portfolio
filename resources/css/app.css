@@ -3588,3 +3588,23 @@ html[data-background-theme="plain"] .portfolio-atmosphere::before {
         flex-basis: 100%;
     }
 }
+
+/* Portrait backgrounds for mobile screens */
+@media (max-width: 767px) {
+    html:not([data-background-theme]) .portfolio-atmosphere::before,
+    html[data-background-theme="celestial"] .portfolio-atmosphere::before {
+        background-image: var(--celestial-background-mobile);
+        background-position: center;
+        opacity: 0.55;
+    }
+
+    html[data-background-theme="dota"] .portfolio-atmosphere::before {
+        background-image: var(--dota-background-mobile);
+        background-position: center;
+        opacity: 0.45;
+    }
+
+    html[data-background-theme="plain"] .portfolio-atmosphere::before {
+        background-image: none;
+    }
+}
