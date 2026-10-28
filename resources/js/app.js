@@ -28,6 +28,13 @@ const filterControls = [
 ];
 
 const savedKey = 'lander.portfolio.saved.v1';
+const archiveStateKey = 'lander.portfolio.archive.v1';
+
+const allowedArchiveFilters = new Set([
+    'all',
+    'saved',
+    ...filterControls.map((control) => control.dataset.filter),
+]);
 
 let saved = new Set();
 let storageAvailable = true;
@@ -35,7 +42,7 @@ let currentFilter = archive?.dataset.initialFilter || 'all';
 let query = searchInput?.value.trim().toLowerCase() || '';
 let toastTimer;
 
-// Restore this browser's saved collection.
+// Saved-project storage.
 function parseSavedCollection(value) {
     const list = JSON.parse(value || '[]');
 
@@ -50,6 +57,61 @@ try {
     saved = parseSavedCollection(localStorage.getItem(savedKey));
 } catch {
     storageAvailable = false;
+}
+
+// Archive browsing state: remembered within this browser tab.
+function saveArchiveState() {
+    if (!archive) return;
+
+    try {
+        sessionStorage.setItem(
+            archiveStateKey,
+            JSON.stringify({
+                filter: currentFilter,
+                search: searchInput?.value || '',
+            })
+        );
+    } catch {
+        // Filtering remains available without browser storage.
+    }
+}
+
+function restoreArchiveState() {
+    if (!archive) return;
+
+    const parameters = new URLSearchParams(window.location.search);
+
+    // Explicit category links take priority over remembered selections.
+    if (parameters.has('category')) return;
+
+    try {
+        const state = JSON.parse(
+            sessionStorage.getItem(archiveStateKey) || 'null'
+        );
+
+        if (
+            !state ||
+            typeof state !== 'object' ||
+            !allowedArchiveFilters.has(state.filter) ||
+            typeof state.search !== 'string'
+        ) {
+            return;
+        }
+
+        currentFilter = state.filter;
+        query = state.search.trim().toLowerCase();
+
+        if (searchInput) {
+            searchInput.value = state.search;
+
+            // Update the search clear button.
+            searchInput.dispatchEvent(
+                new Event('input', { bubbles: true })
+            );
+        }
+    } catch {
+        // Keep the normal initial state if restoration fails.
+    }
 }
 
 // Notifications.
@@ -71,6 +133,8 @@ function notify(message) {
 // Project archive filtering.
 function applyFilters() {
     if (!archive) return;
+
+    saveArchiveState();
 
     let visible = 0;
 
@@ -116,7 +180,6 @@ function applyFilters() {
         const message =
             `${visible} PROJECT${visible === 1 ? '' : 'S'}`;
 
-        // Avoid announcing an unchanged count.
         if (count.textContent.trim() !== message) {
             count.textContent = message;
         }
@@ -129,7 +192,7 @@ function applyFilters() {
     }
 }
 
-// Synchronize save buttons and collection counts.
+// Synchronize saved buttons and collection counts.
 function syncSaved() {
     document.querySelectorAll('[data-save]').forEach((button) => {
         const id = button.dataset.save;
@@ -182,7 +245,7 @@ document.querySelectorAll('[data-save]').forEach((button) => {
             storageAvailable = false;
         }
 
-        // Keep keyboard focus visible if removing a saved archive row.
+        // Avoid leaving keyboard focus inside a row being hidden.
         const row = button.closest(
             '.archive [data-project][data-category]'
         );
@@ -218,7 +281,6 @@ filterControls.forEach((control) => {
     control.addEventListener('click', (event) => {
         if (!archive) return;
 
-        // Preserve normal modified-link behavior.
         if (
             control.tagName === 'A' &&
             (
@@ -233,21 +295,24 @@ filterControls.forEach((control) => {
 
         event.preventDefault();
 
-        currentFilter = control.dataset.filter || 'all';
+        const filter = control.dataset.filter;
+
+        currentFilter = allowedArchiveFilters.has(filter)
+            ? filter
+            : 'all';
 
         applyFilters();
     });
 });
 
 // Search within the active category.
-// Clear buttons and keyboard shortcuts are handled in project-search.js.
+// Shortcuts and the clear button live in project-search.js.
 searchInput?.addEventListener('input', () => {
     query = searchInput.value.trim().toLowerCase();
 
     applyFilters();
 });
 
-// Clear the search and notify the search-controls module.
 function clearSearchInput() {
     query = '';
 
@@ -272,7 +337,7 @@ document.querySelectorAll('[data-open-saved]').forEach((button) => {
 
         clearSearchInput();
 
-        document.querySelector('#projects')?.scrollIntoView({
+        archive.scrollIntoView({
             behavior: motionReduced.matches ? 'instant' : 'smooth',
             block: 'start',
         });
@@ -291,7 +356,6 @@ document
 
         currentFilter = 'all';
 
-        // Move focus before the empty-state button becomes hidden.
         const focusTarget =
             searchInput ||
             document.querySelector('[data-filter="all"]');
@@ -301,7 +365,7 @@ document
         clearSearchInput();
     });
 
-// Synchronize the saved collection across browser tabs.
+// Synchronize the saved collection between browser tabs.
 window.addEventListener('storage', (event) => {
     if (event.key !== savedKey && event.key !== null) return;
 
@@ -316,8 +380,23 @@ window.addEventListener('storage', (event) => {
     syncSaved();
 });
 
-// Initial saved state and archive results.
+// Restore archive selections before displaying initial results.
+restoreArchiveState();
 syncSaved();
+
+// Refresh state when returning through the browser's page cache.
+window.addEventListener('pageshow', (event) => {
+    if (!event.persisted) return;
+
+    try {
+        saved = parseSavedCollection(localStorage.getItem(savedKey));
+    } catch {
+        // Preserve the collection held in memory.
+    }
+
+    restoreArchiveState();
+    syncSaved();
+});
 
 // Showcase carousel.
 const carousel = document.querySelector('.carousel');
@@ -424,6 +503,7 @@ if (carousel) {
     });
 
     window.addEventListener('load', scheduleCarouselUpdate);
+    window.addEventListener('pageshow', scheduleCarouselUpdate);
 
     if ('ResizeObserver' in window) {
         const observer = new ResizeObserver(scheduleCarouselUpdate);
@@ -436,83 +516,82 @@ if (carousel) {
     updateCarousel();
 }
 
-// Project sharing dialog.
+// Native sharing with a copy-link dialog fallback.
 const shareDialog = document.querySelector('.share-dialog');
 
 let shareOpener;
 let nativeSharePending = false;
 
-    document.querySelectorAll('[data-share]').forEach((button) => {
-        button.addEventListener('click', async () => {
-            if (!button.dataset.share || nativeSharePending) return;
+document.querySelectorAll('[data-share]').forEach((button) => {
+    button.addEventListener('click', async () => {
+        if (!button.dataset.share || nativeSharePending) return;
 
-            let shareUrl;
+        let shareUrl;
+
+        try {
+            shareUrl = new URL(
+                button.dataset.share,
+                window.location.href
+            );
+
+            if (!['https:', 'http:'].includes(shareUrl.protocol)) {
+                throw new Error('Unsupported link');
+            }
+        } catch {
+            notify('The project link could not be opened.');
+            return;
+        }
+
+        const name = button.dataset.shareName || 'this project';
+
+        if (
+            window.isSecureContext &&
+            typeof navigator.share === 'function'
+        ) {
+            nativeSharePending = true;
 
             try {
-                shareUrl = new URL(
-                    button.dataset.share,
-                    window.location.href
-                );
+                await navigator.share({
+                    title: `${name} — Lander`,
+                    text: `Explore ${name} in Lander’s project portfolio.`,
+                    url: shareUrl.href,
+                });
 
-                if (!['https:', 'http:'].includes(shareUrl.protocol)) {
-                    throw new Error('Unsupported link');
-                }
-            } catch {
-                notify('The project link could not be opened.');
                 return;
-            }
-
-            const name = button.dataset.shareName || 'this project';
-
-            if (
-                window.isSecureContext &&
-                typeof navigator.share === 'function'
-            ) {
-                nativeSharePending = true;
-
-                try {
-                    await navigator.share({
-                        title: `${name} — Lander`,
-                        text: `Explore ${name} in Lander’s project portfolio.`,
-                        url: shareUrl.href,
-                    });
-
+            } catch (error) {
+                if (error?.name === 'AbortError') {
                     return;
-                } catch (error) {
-                    // Dismissing the share menu needs no error notification.
-                    if (error.name === 'AbortError') {
-                        return;
-                    }
-
-                    // Other failures fall back to the copy-link dialog.
-                } finally {
-                    nativeSharePending = false;
                 }
+
+                // Other failures use the copy-link dialog.
+            } finally {
+                nativeSharePending = false;
             }
+        }
 
-            const field = shareDialog?.querySelector('input');
-            const heading = shareDialog?.querySelector('h2');
+        const field = shareDialog?.querySelector('input');
+        const heading = shareDialog?.querySelector('h2');
 
-            if (!shareDialog || !field) {
-                notify('Sharing is currently unavailable.');
-                return;
-            }
+        if (!shareDialog || !field) {
+            notify('Sharing is currently unavailable.');
+            return;
+        }
 
-            shareOpener = button;
-            field.value = shareUrl.href;
+        shareOpener = button;
+        field.value = shareUrl.href;
 
-            if (heading) {
-                heading.textContent = `Share ${name}`;
-            }
+        if (heading) {
+            heading.textContent = `Share ${name}`;
+        }
 
-            if (!shareDialog.open) {
-                shareDialog.showModal();
-            }
+        if (!shareDialog.open) {
+            shareDialog.showModal();
+        }
 
-            field.focus();
-            field.select();
-        });
+        field.focus();
+        field.select();
     });
+});
 
 document
     .querySelector('[data-copy-share]')
@@ -547,7 +626,6 @@ shareDialog?.addEventListener('close', () => {
     shareOpener?.focus({ preventScroll: true });
 });
 
-// Close sharing when clicking outside the dialog.
 shareDialog?.addEventListener('click', (event) => {
     if (event.target !== shareDialog) return;
 
@@ -564,7 +642,7 @@ shareDialog?.addEventListener('click', (event) => {
     }
 });
 
-// Legacy hero-scene tilt, if that scene is present.
+// Legacy hero-scene tilt, when that scene is present.
 const pointerFine = window.matchMedia('(pointer: fine)');
 
 document.querySelectorAll('.hero-scene[data-tilt]').forEach((scene) => {
