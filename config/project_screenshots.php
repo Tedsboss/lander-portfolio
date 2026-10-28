@@ -30,4 +30,15 @@ return [
         'NPMCS/programs.png' => 'Programs',
         'NPMCS/rpmcs.png' => 'RPMCs',
     ],
+
+    'ppms' => [
+    'PPMS/login.png' => 'login',
+    'PPMS/dashboard.png' => 'Dashboard',
+    'PPMS/listofprojects.png' => 'List of Projects',
+    'PPMS/custom-report.png' => 'Custom Report',
+    'PPMS/grants.png' => 'Grants',
+    'PPMS/loans.png' => 'Loans',
+    'PPMS/Taskboard.png' => 'Taskboard',
+],
+
 ];
