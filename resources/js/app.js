@@ -59,58 +59,113 @@ try {
     storageAvailable = false;
 }
 
-// Archive browsing state: remembered within this browser tab.
+// Remember archive selections and synchronize the address bar.
 function saveArchiveState() {
     if (!archive) return;
+
+    const search = searchInput?.value || '';
 
     try {
         sessionStorage.setItem(
             archiveStateKey,
             JSON.stringify({
                 filter: currentFilter,
-                search: searchInput?.value || '',
+                search,
             })
         );
     } catch {
         // Filtering remains available without browser storage.
     }
+
+    const url = new URL(window.location.href);
+
+    url.searchParams.delete('category');
+    url.searchParams.delete('collection');
+    url.searchParams.delete('q');
+
+    if (currentFilter === 'saved') {
+        // "saved" is a browser collection, not a server category.
+        url.searchParams.set('collection', 'saved');
+    } else if (currentFilter !== 'all') {
+        url.searchParams.set('category', currentFilter);
+    }
+
+    if (search.trim()) {
+        url.searchParams.set('q', search.trim());
+    }
+
+    if (url.href !== window.location.href) {
+        try {
+            window.history.replaceState(
+                window.history.state,
+                '',
+                url.href
+            );
+        } catch {
+            // Filtering still works if the URL cannot be updated.
+        }
+    }
 }
 
+// Shared URLs take priority over remembered selections.
 function restoreArchiveState() {
     if (!archive) return;
 
     const parameters = new URLSearchParams(window.location.search);
 
-    // Explicit category links take priority over remembered selections.
-    if (parameters.has('category')) return;
+    const hasSharedSelection =
+        parameters.has('category') ||
+        parameters.has('collection') ||
+        parameters.has('q');
 
-    try {
-        const state = JSON.parse(
-            sessionStorage.getItem(archiveStateKey) || 'null'
-        );
+    let restoredFilter = currentFilter;
+    let restoredSearch = searchInput?.value || '';
+
+    if (hasSharedSelection) {
+        const category = parameters.get('category');
 
         if (
-            !state ||
-            typeof state !== 'object' ||
-            !allowedArchiveFilters.has(state.filter) ||
-            typeof state.search !== 'string'
+            category &&
+            category !== 'saved' &&
+            allowedArchiveFilters.has(category)
         ) {
-            return;
+            restoredFilter = category;
+        } else if (parameters.get('collection') === 'saved') {
+            restoredFilter = 'saved';
+        } else {
+            restoredFilter = 'all';
         }
 
-        currentFilter = state.filter;
-        query = state.search.trim().toLowerCase();
-
-        if (searchInput) {
-            searchInput.value = state.search;
-
-            // Update the search clear button.
-            searchInput.dispatchEvent(
-                new Event('input', { bubbles: true })
+        restoredSearch = parameters.get('q') || '';
+    } else {
+        try {
+            const state = JSON.parse(
+                sessionStorage.getItem(archiveStateKey) || 'null'
             );
+
+            if (
+                state &&
+                typeof state === 'object' &&
+                allowedArchiveFilters.has(state.filter) &&
+                typeof state.search === 'string'
+            ) {
+                restoredFilter = state.filter;
+                restoredSearch = state.search;
+            }
+        } catch {
+            // Keep the normal initial state.
         }
-    } catch {
-        // Keep the normal initial state if restoration fails.
+    }
+
+    currentFilter = restoredFilter;
+    query = restoredSearch.trim().toLowerCase();
+
+    if (searchInput) {
+        searchInput.value = restoredSearch;
+
+        searchInput.dispatchEvent(
+            new Event('input', { bubbles: true })
+        );
     }
 }
 
