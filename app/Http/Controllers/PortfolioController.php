@@ -11,25 +11,60 @@ class PortfolioController extends Controller
     private function projects(): Collection
     {
         return collect(config('portfolio.projects', []))
-            ->map(fn (array $project, int $index) => $project + ['number' => $index + 1]);
+            ->values()
+            ->map(
+                fn (array $project, int $index) => $project + [
+                    'number' => $index + 1,
+                ]
+            );
     }
 
     public function index(Request $request): View
     {
+        $categories = config('portfolio.categories', []);
+
         $category = $request->query('category', 'all');
-        abort_unless(in_array($category, ['all', ...array_keys(config('portfolio.categories'))], true), 404);
+
+        $allowedCategories = [
+            'all',
+            ...array_keys($categories),
+        ];
+
+        abort_unless(
+            is_string($category)
+                && in_array($category, $allowedCategories, true),
+            404
+        );
+
         $allProjects = $this->projects();
-        $projects = $category === 'all' ? $allProjects : $allProjects->where('category', $category)->values();
-        $counts = ['all' => $allProjects->count()];
-        foreach (array_keys(config('portfolio.categories')) as $key) {
-            $counts[$key] = $allProjects->where('category', $key)->count();
+
+        $projects = $category === 'all'
+            ? $allProjects
+            : $allProjects
+                ->where('category', $category)
+                ->values();
+
+        $counts = [
+            'all' => $allProjects->count(),
+        ];
+
+        foreach (array_keys($categories) as $key) {
+            $counts[$key] = $allProjects
+                ->where('category', $key)
+                ->count();
         }
 
         return view('portfolio.index', [
             'allProjects' => $allProjects,
             'projects' => $projects,
-            'featured' => $projects->where('featured', true)->values(),
-            'otherProjects' => $projects->reject(fn (array $project) => $project['featured'] ?? false)->values(),
+            'featured' => $projects
+                ->where('featured', true)
+                ->values(),
+            'otherProjects' => $projects
+                ->reject(
+                    fn (array $project) => $project['featured'] ?? false
+                )
+                ->values(),
             'category' => $category,
             'counts' => $counts,
         ]);
@@ -37,9 +72,13 @@ class PortfolioController extends Controller
 
     public function show(string $project): View
     {
-        $selected = $this->projects()->firstWhere('id', $project);
+        $selected = $this->projects()
+            ->firstWhere('id', $project);
+
         abort_if($selected === null, 404);
 
-        return view('portfolio.show', ['project' => $selected]);
+        return view('portfolio.show', [
+            'project' => $selected,
+        ]);
     }
 }

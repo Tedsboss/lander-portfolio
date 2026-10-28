@@ -9,6 +9,7 @@ return [
         'government' => 'Government',
         'community' => 'Community',
         'maintenance' => 'Maintenance',
+        'business' => 'Business',
     ],
     'skills' => [
         'PHP',
@@ -127,6 +128,16 @@ return [
             'role' => 'Maintenance',
             'description' => 'Maintenance work for the Tax Incentives Management and Transparency Act (TIMTA) Online Data Collection system.',
             'contribution' => 'My involvement is focused on maintaining the existing online data collection system.',
+        ],
+        [
+            'id' => 'chickenlicious',
+            'code' => 'CHICKENLICIOUS',
+            'name' => 'Chickenlicious Business Website',
+            'category' => 'business',
+            'label' => 'Food business',
+            'role' => 'Owner & developer',
+            'description' => 'A website for my Chickenlicious food business.',
+            'tags' => [],
         ],
     ],
 ];

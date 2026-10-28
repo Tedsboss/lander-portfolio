@@ -252,16 +252,41 @@
             public_path('downloads/lander-resume.pdf')
         );
 
-        $showcaseProjects = $allProjects->take(5);
+        $showcaseIds = [
+            'direk',
+            'npmcs',
+            'eigis',
+            'icc',
+            'ppms',
+            'chickenlicious',
+        ];
+
+        $projectsById = $allProjects->keyBy('id');
+
+        $showcaseProjects = collect($showcaseIds)
+            ->map(fn ($id) => $projectsById->get($id))
+            ->filter()
+            ->values();
+
         $projectCount = $allProjects->count();
 
-        $communityProjects = $allProjects->where(
-            'category',
-            'community'
-        );
+        $communityProjects = $allProjects
+            ->where('category', 'community');
 
         $filters = ['all' => 'All projects']
             + config('portfolio.categories', []);
+
+        $archiveCounts = collect($filters)
+            ->mapWithKeys(fn ($label, $key) => [
+                $key => $key === 'all'
+                    ? $projectCount
+                    : $allProjects->where('category', $key)->count(),
+            ]);
+
+        $visibleProjectCount = $archiveCounts->get(
+            $category,
+            $projectCount
+        );
     @endphp
 
     {{-- Hero --}}
@@ -280,9 +305,9 @@
 
             <p class="hero-intro">
                 Hey, I’m {{ config('portfolio.name', 'Lander') }}.
-                I build digital experiences that move public service
-                forward. Complex workflows. Thoughtful code.
-                Real-world purpose.
+                I build digital experiences for public service,
+                communities, and businesses. Complex workflows.
+                Thoughtful code. Real-world purpose.
             </p>
 
             <div class="hero-buttons">
@@ -366,7 +391,7 @@
                 >
                     {{ $showcaseProjects->isEmpty() ? '00' : '01' }}
                     /
-                    {{ str_pad($showcaseProjects->count(), 2, '0', STR_PAD_LEFT) }}
+                    {{ str_pad((string) $showcaseProjects->count(), 2, '0', STR_PAD_LEFT) }}
                 </span>
 
                 <button
@@ -374,6 +399,7 @@
                     data-carousel-prev
                     aria-label="Previous featured project"
                     aria-controls="featured-carousel"
+                    disabled
                 >
                     ←
                 </button>
@@ -383,6 +409,7 @@
                     data-carousel-next
                     aria-label="Next featured project"
                     aria-controls="featured-carousel"
+                    @disabled($showcaseProjects->count() < 2)
                 >
                     →
                 </button>
@@ -459,7 +486,7 @@
                         @endif
                     >
                         {{ $label }}
-                        <span>{{ $counts[$key] ?? 0 }}</span>
+                        <span>{{ $archiveCounts->get($key, 0) }}</span>
                     </a>
                 @endforeach
 
@@ -474,7 +501,11 @@
                 </button>
             </div>
 
-            <div class="search" role="search" aria-label="Search projects">
+            <div
+                class="search"
+                role="search"
+                aria-label="Search projects"
+            >
                 <span aria-hidden="true">⌕</span>
 
                 <input
@@ -495,6 +526,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
+
             <div class="archive-share">
                 <button
                     type="button"
@@ -564,7 +596,8 @@
                 aria-live="polite"
                 aria-atomic="true"
             >
-                {{ $counts[$category] ?? $projectCount }} PROJECTS
+                {{ $visibleProjectCount }}
+                {{ $visibleProjectCount === 1 ? 'PROJECT' : 'PROJECTS' }}
             </span>
 
             <span>
@@ -695,9 +728,9 @@
             </p>
 
             <p>
-                From national platforms to barangay projects, I care
-                about understanding the people behind the process
-                and building something that helps.
+                From national platforms to barangay projects and business
+                websites, I care about understanding the people behind
+                the process and building something that helps.
             </p>
 
             <div class="skill-tags" aria-label="Technical skills">
@@ -708,7 +741,7 @@
         </div>
     </section>
 
-    {{-- Contact: separate from the About grid --}}
+    {{-- Contact --}}
     <section
         id="contact"
         class="lander-contact shell"
@@ -752,6 +785,7 @@
                         ↗
                     </span>
                 </a>
+
                 <div class="contact-email-tools">
                     <button
                         type="button"
@@ -845,7 +879,7 @@
         </div>
     </section>
 
-    {{-- Résumé download --}}
+    {{-- Résumé --}}
     <section
         class="download-section shell"
         id="download"
@@ -890,43 +924,43 @@
                     or download a copy to read offline.
                 </p>
 
-            @if ($resumeAvailable)
-                <div class="resume-actions">
-                    <a
-                        class="btn btn-lime"
-                        href="{{ asset('downloads/lander-resume.pdf') }}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="View Lander’s résumé PDF in a new tab"
-                    >
-                        View résumé
-                        <span aria-hidden="true">↗</span>
-                    </a>
+                @if ($resumeAvailable)
+                    <div class="resume-actions">
+                        <a
+                            class="btn btn-lime"
+                            href="{{ asset('downloads/lander-resume.pdf') }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="View Lander’s résumé PDF in a new tab"
+                        >
+                            View résumé
+                            <span aria-hidden="true">↗</span>
+                        </a>
 
-                    <a
-                        class="text-link resume-download-link"
-                        href="{{ asset('downloads/lander-resume.pdf') }}"
-                        download="Lander-Resume.pdf"
-                    >
-                        Download PDF
-                        <span aria-hidden="true">↓</span>
-                    </a>
-                </div>
+                        <a
+                            class="text-link resume-download-link"
+                            href="{{ asset('downloads/lander-resume.pdf') }}"
+                            download="Lander-Resume.pdf"
+                        >
+                            Download PDF
+                            <span aria-hidden="true">↓</span>
+                        </a>
+                    </div>
 
-                <small>
-                    PDF FORMAT
-                    <span aria-hidden="true">✦</span>
-                    VIEW ONLINE OR SAVE A COPY
-                </small>
-            @else
-                <span class="resume-unavailable">
-                    Résumé available soon
-                </span>
+                    <small>
+                        PDF FORMAT
+                        <span aria-hidden="true">✦</span>
+                        VIEW ONLINE OR SAVE A COPY
+                    </small>
+                @else
+                    <span class="resume-unavailable">
+                        Résumé available soon
+                    </span>
 
-                <small>
-                    MY UPDATED RÉSUMÉ WILL BE AVAILABLE HERE
-                </small>
-            @endif
+                    <small>
+                        MY UPDATED RÉSUMÉ WILL BE AVAILABLE HERE
+                    </small>
+                @endif
             </div>
         </div>
     </section>

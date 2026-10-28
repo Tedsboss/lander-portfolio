@@ -68,5 +68,13 @@ return [
     'TIMTA/index.png' => 'index',
     ],
 
+    'chickenlicious' => [
+    'CHICKENLICIOUS/public.png' => 'public',
+    'CHICKENLICIOUS/admin-login.png' => 'admin login',
+    'CHICKENLICIOUS/pos.png' => 'pos',
+    'CHICKENLICIOUS/orders.png' => 'orders',
+    'CHICKENLICIOUS/saleslogs.png' => 'sales logs',
+    ],
+
 
 ];

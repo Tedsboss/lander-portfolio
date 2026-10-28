@@ -16,6 +16,7 @@ const projectFolders = [
     'SAGAD',
     'SDS',
     'TIMTA',
+    'CHICKENLICIOUS',
 ];
 
 const variants = [
