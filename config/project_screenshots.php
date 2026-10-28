@@ -39,6 +39,34 @@ return [
     'PPMS/grants.png' => 'Grants',
     'PPMS/loans.png' => 'Loans',
     'PPMS/Taskboard.png' => 'Taskboard',
-],
+    ],
+
+    'sagad' => [
+    'SAGAD/publicpage.png' => 'public page',
+    'SAGAD/login.png' => 'login',
+    'SAGAD/Dashboard.png' => 'Dashboard',
+    'SAGAD/documentrequest.png' => 'Document Request',
+    'SAGAD/residents.png' => 'Residents',
+    'SAGAD/appointments.png' => 'Appointments',
+    'SAGAD/reports.png' => 'Reports',
+    ],
+
+    'imp' => [
+    'IMP/login.png' => 'login',
+    'IMP/dashboard.png' => 'Dashboard',
+    'IMP/mp monitoring.png' => 'MP Monitoring',
+    'IMP/mp submission.png' => 'MP Submission',
+    ],
+
+    'sds' => [
+    'SDS/login.png' => 'login',
+    ],
+
+    'timta' => [
+    'TIMTA/login.png' => 'login',
+    'TIMTA/listing.png' => 'listing',
+    'TIMTA/index.png' => 'index',
+    ],
+
 
 ];

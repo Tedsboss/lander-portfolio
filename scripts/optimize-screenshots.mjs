@@ -6,7 +6,17 @@ import { fileURLToPath } from 'node:url';
 const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 const imagesRoot = path.join(projectRoot, 'public', 'images');
 
-const projectFolders = ['DIREK', 'EIGIS', 'ICC', 'NPMCS'];
+const projectFolders = [
+    'DIREK',
+    'EIGIS',
+    'ICC',
+    'NPMCS',
+    'IMP',
+    'PPMS',
+    'SAGAD',
+    'SDS',
+    'TIMTA',
+];
 
 const variants = [
     { name: 'thumbs', width: 256, quality: 82 },
