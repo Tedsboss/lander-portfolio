@@ -1,37 +1,47 @@
 @extends('layouts.app')
 
+@php
+    $screenshots = collect(
+        config('project_screenshots.' . $project['id'], [])
+    )
+        ->filter(
+            fn ($caption, $path) => is_file(
+                public_path('images/' . $path)
+            )
+        )
+        ->map(
+            fn ($caption, $path) => [
+                'src' => asset('images/' . $path),
+                'caption' => $caption,
+            ]
+        )
+        ->values();
+
+    $firstScreenshot = $screenshots->first();
+
+    $tags = array_unique(array_filter([
+        $project['label'],
+        $project['role'] ?? null,
+        $project['status'] ?? null,
+    ]));
+
+    $projectSocialImage = $firstScreenshot['src']
+        ?? asset('images/lander-social-preview.png');
+
+    $projectSocialImageAlt = $firstScreenshot
+        ? $project['code'] . ' — ' . $firstScreenshot['caption']
+        : 'Lander — Senior Software Developer portfolio';
+@endphp
+
 @section('title', $project['code'] . ' — ' . config('portfolio.name'))
 
 @section('description', $project['description'])
 
+@section('social_image', $projectSocialImage)
+
+@section('social_image_alt', $projectSocialImageAlt)
+
 @section('content')
-    {{-- Keep your existing project details, gallery, and navigation here. --}}
-    @php
-        $screenshots = collect(
-            config('project_screenshots.'.$project['id'], [])
-        )
-            ->filter(
-                fn ($caption, $path) => is_file(
-                    public_path('images/'.$path)
-                )
-            )
-            ->map(
-                fn ($caption, $path) => [
-                    'src' => asset('images/'.$path),
-                    'caption' => $caption,
-                ]
-            )
-            ->values();
-
-        $firstScreenshot = $screenshots->first();
-
-        $tags = array_unique(array_filter([
-            $project['label'],
-            $project['role'] ?? null,
-            $project['status'] ?? null,
-        ]));
-    @endphp
-
     <article class="detail shell">
         <a
             href="{{ route('portfolio.index') }}#projects"
@@ -44,10 +54,10 @@
             <div class="detail-copy">
                 <span class="eyebrow">
                     <span class="section-no">
-                        {{ str_pad($project['number'], 2, '0', STR_PAD_LEFT) }}
+                        {{ str_pad((string) $project['number'], 2, '0', STR_PAD_LEFT) }}
                     </span>
 
-                    {{ config('portfolio.categories.'.$project['category']) }}
+                    {{ config('portfolio.categories.' . $project['category']) }}
                     / PROJECT EXPERIENCE
                 </span>
 
@@ -67,6 +77,7 @@
 
                 @if (!empty($project['contribution']))
                     <h2>My contribution</h2>
+
                     <p>{{ $project['contribution'] }}</p>
                 @endif
 
@@ -101,7 +112,8 @@
                         data-share-name="{{ $project['code'] }}"
                         aria-label="Share {{ $project['code'] }} project"
                     >
-                        ↗ Share project
+                        <span aria-hidden="true">↗</span>
+                        Share project
                     </button>
                 </div>
             </div>
@@ -120,7 +132,7 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 data-gallery-open
-                                aria-label="Enlarge screenshot"
+                                aria-label="Enlarge {{ $project['code'] }} screenshot"
                             >
                                 <img
                                     src="{{ $firstScreenshot['src'] }}"
@@ -130,7 +142,8 @@
                                 >
 
                                 <span class="project-gallery-expand">
-                                    Enlarge ↗
+                                    Enlarge
+                                    <span aria-hidden="true">↗</span>
                                 </span>
                             </a>
 
@@ -138,6 +151,7 @@
                                 class="project-gallery-caption"
                                 data-gallery-caption
                                 aria-live="polite"
+                                aria-atomic="true"
                             >
                                 {{ $firstScreenshot['caption'] }}
                             </figcaption>
@@ -145,7 +159,8 @@
 
                         <div
                             class="project-gallery-thumbnails"
-                            aria-label="Project screenshots"
+                            role="group"
+                            aria-label="{{ $project['code'] }} screenshots"
                         >
                             @foreach ($screenshots as $shot)
                                 <a
@@ -156,7 +171,6 @@
                                     data-gallery-shot
                                     data-caption="{{ $shot['caption'] }}"
                                     aria-label="View {{ $shot['caption'] }}"
-
                                     @if ($loop->first)
                                         aria-current="true"
                                     @endif
@@ -179,7 +193,11 @@
                             aria-label="{{ $project['code'] }} screenshot viewer"
                         >
                             <div class="project-lightbox-toolbar">
-                                <span data-lightbox-count aria-live="polite">
+                                <span
+                                    data-lightbox-count
+                                    aria-live="polite"
+                                    aria-atomic="true"
+                                >
                                     1 / {{ $screenshots->count() }}
                                 </span>
 
@@ -189,7 +207,7 @@
                                     data-lightbox-close
                                     aria-label="Close screenshot viewer"
                                 >
-                                    ×
+                                    <span aria-hidden="true">×</span>
                                 </button>
                             </div>
 
@@ -197,11 +215,13 @@
                                 <img
                                     data-lightbox-image
                                     alt=""
+                                    decoding="async"
                                 >
 
                                 <figcaption
                                     data-lightbox-caption
                                     aria-live="polite"
+                                    aria-atomic="true"
                                 ></figcaption>
                             </figure>
 
@@ -212,7 +232,7 @@
                                     data-lightbox-prev
                                     aria-label="Previous screenshot"
                                 >
-                                    ←
+                                    <span aria-hidden="true">←</span>
                                 </button>
 
                                 <button
@@ -221,7 +241,7 @@
                                     data-lightbox-next
                                     aria-label="Next screenshot"
                                 >
-                                    →
+                                    <span aria-hidden="true">→</span>
                                 </button>
                             </div>
                         </dialog>
