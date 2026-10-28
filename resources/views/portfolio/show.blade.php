@@ -9,12 +9,21 @@
                 public_path('images/' . $path)
             )
         )
-        ->map(
-            fn ($caption, $path) => [
+        ->map(function ($caption, $path) {
+            $thumbnailPath = 'images/optimized/thumbs/' . $path . '.webp';
+
+            return [
                 'src' => asset('images/' . $path),
+
+                'thumbnail' => asset(
+                    is_file(public_path($thumbnailPath))
+                        ? $thumbnailPath
+                        : 'images/' . $path
+                ),
+
                 'caption' => $caption,
-            ]
-        )
+            ];
+        })
         ->values();
 
     $firstScreenshot = $screenshots->first();
@@ -176,7 +185,7 @@
                                     @endif
                                 >
                                     <img
-                                        src="{{ $shot['src'] }}"
+                                        src="{{ $shot['thumbnail'] }}"
                                         alt=""
                                         loading="lazy"
                                         decoding="async"
